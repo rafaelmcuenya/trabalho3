@@ -18,32 +18,32 @@ typedef void* Dados;
 
 Hash* createHash();
 /*
-Função para criar o Hashfile
+Função para criar o hashfile
 */
 
-void inserirItemHash(Hash *eh, int key, int value);
+void inserirItemHash(Hash *eh, int chaveH, int info);
 /*
-
+Função para inserir um item no hasfile
 */
 
-int  buscaItemHash(Hash *eh, int key, int *value);
+int  buscaItemHash(Hash *eh, int chaveH, int *info);
 /*
-
+Função para procurar um item específica por meio de sua chave.
 */
 
-void deletarItemHash(Hash *eh, int key);
+void deletarItemHash(Hash *eh, int chaveH);
 /*
-
+Função para deletar um item por meio da chave
 */
 
 /*
- int ??hash(int key);
+ int ??hash(int chaveH);
 necessário??
 */
 
-void dobraDirectorio(Hash *eh);
+void dobraDiretorio(Hash *eh);
 /*
-
+Função para dobrar a capacidade do diretório
 */
 
 void splitBucket(Hash *eh, int index);
@@ -57,7 +57,7 @@ Bucket* createBucket(int depth);
 */
 
 // Apagar dps
-void eh_print(Hash *eh);
+void ??print(Hash *eh);
 /*
 
 */
@@ -69,6 +69,4 @@ void freeHash(Hash *eh);
 */
 
 #endif
-
-
 #endif
