@@ -5,8 +5,8 @@ void setUp(void) {}
 void setDowm(void) {}
 
 
-void test_NomeDaFuncao(void){
-  TEST_ASSERT_RESTO();
+void test_createHash(void){
+  TEST_ASSERT_NOT_NULL(?);
 }
 
 int main (void){
