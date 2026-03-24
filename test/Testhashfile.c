@@ -41,6 +41,14 @@ void testCriarHash5(void){
 void testCriarHash6(void){
     HashFile hf = createHashFile(8, 1);
     TEST_ASSERT_NOT_NULL(hf);
+    int tamanhoBucket = getTamanhoBucket(hf);
+    TEST_ASSERT_EQUAL_INT(8, tamanhoBucket);
+    freeHash(hf);
+}
+
+void testCriarHash6(void){
+    HashFile hf = createHashFile(8, 1);
+    TEST_ASSERT_NOT_NULL(hf);
     int tamanhoBucket = hashGetBucketSize? 
     freeHash(hf);
 }
@@ -187,13 +195,8 @@ void testSplit1(void){
     TEST_ASSERT_NOT_NULL(hf);
     
     inserirItemHash(hf, 10, 100);
-    int profundidade1 = getProfundidadeGlobal(hf);
-    
     inserirItemHash(hf, 20, 200);
-    int profundidade2 = getProfundidadeGlobal(hf);
-    
     inserirItemHash(hf, 30, 300);
-    int profundidade3 = getProfundidadeGlobal(hf);
     
     int valor;
     int encontrado = buscaItemHash(hf, 30, &valor);
@@ -242,7 +245,6 @@ void testDobraDiretorio(void){
 void testCriaBucket1(void){
     Bucket b = createBucket(1);
     TEST_ASSERT_NOT_NULL(b);
-    freeHash(NULL); 
 }
 
 void testCriaBucket2(void){
@@ -270,7 +272,32 @@ void testFreeHash2(void){
     TEST_ASSERT_TRUE(1); 
 }
 
+void testGetProfundidadeBucket(void){
+    HashFile hf = createHashFile(4, 2);
+    TEST_ASSERT_NOT_NULL(hf);
+    int profundidade = getProfundidadeBucket(hf, 0);
+    TEST_ASSERT_EQUAL_INT(2, profundidade);
+    freeHash(hf);
+}
 
+void testGetQuantidadeBucket(void){
+    HashFile hf = createHashFile(4, 2);
+    TEST_ASSERT_NOT_NULL(hf);
+    inserirItemHash(hf, 10, 100);
+    int quantidade = getQuantidadeBucket(hf, 0);
+    TEST_ASSERT_EQUAL_INT(1, quantidade);
+    freeHash(hf);
+}
+
+void testBucketEstaCheio(void){
+    HashFile hf = createHashFile(2, 1);
+    TEST_ASSERT_NOT_NULL(hf);
+    inserirItemHash(hf, 10, 100);
+    TEST_ASSERT_EQUAL_INT(0, bucketEstaCheio(hf, 0));
+    inserirItemHash(hf, 20, 200);
+    TEST_ASSERT_EQUAL_INT(1, bucketEstaCheio(hf, 0));
+    freeHash(hf);
+}
 
 void testErro1(void){
     int resultado = inserirItemHash(NULL, 10, 100);
@@ -338,6 +365,9 @@ int main(void){
     
     RUN_TEST(testCriaBucket1);
     RUN_TEST(testCriaBucket2);
+    RUN_TEST(testGetProfundidadeBucket);
+    RUN_TEST(testGetQuantidadeBucket);
+    RUN_TEST(testBucketEstaCheio);
     
     RUN_TEST(testFreeHash1);
     RUN_TEST(testFreeHash2);
