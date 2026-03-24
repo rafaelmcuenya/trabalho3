@@ -77,7 +77,12 @@ Função para liberar o HashFile.
 Primeiro parâmetro é o ponteiro para o HashFile.
 */
 
-//Funções temporárias (?) para os TU
+int getTamanhoBucket(HashFile hf);
+/*
+Função para obter a capacidade máxima de um bucket.
+Primeiro parâmetro é o ponteiro para o HashFile.
+Retorna o tamanho do bucket, ou -1 em caso de erro.
+*/
 
 int getProfundidadeGlobal(HashFile hf);
 /*
