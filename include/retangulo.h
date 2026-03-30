@@ -11,7 +11,6 @@
 */
 
 typedef void* Retangulo;
-typedef void* Aresta;
 
 Retangulo criaRetangulo(int i, double x, double y, double w, double h, char* corb, char* corp);
 /*
@@ -40,11 +39,14 @@ double getYRetangulo(Retangulo r);
    Retorna a coordenada Y da âncora do retangulo.
 */
 
-double getArestaRetangulo(Retangulo r, char c);
+double getLarguraRetangulo(Retangulo r);
 /*
-   Recebe um retângulo na qual queremos obter uma de suas arestas.
-   Recebe um character indicando qual aresta a função deve obter, baseado na orientação (Norte para baixo)
-   Retorna ??? da aresta obtida.
+   Retorna a largura do retângulo.
+*/
+
+double getAlturaRetangulo(Retangulo r);
+/*
+   Retorna a altura do retângulo.
 */
 
 int validaRetangulo(void* r);
