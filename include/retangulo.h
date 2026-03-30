@@ -11,6 +11,7 @@
 */
 
 typedef void* Retangulo;
+typedef void* Aresta;
 
 Retangulo criaRetangulo(int i, double x, double y, double w, double h, char* corb, char* corp);
 /*
@@ -29,16 +30,6 @@ int idRetangulo(Retangulo r);
    Coleta o ID de um retângulo específico para possíveis manipulações no mesmo, retornando tal identificador.
 */
 
-void moveRetangulo(Retangulo r, double x, double y);
-/*
-   Por meio do ID repassado pelo primeiro parâmetro, move a âncora de tal forma em tantas coordenadas no eixo x e eixo y, valores repassados respectivamente pelos segundo e terceiro parâmetros.   
-*/
-
-Retangulo clonaRetangulo(Retangulo r);
-/*
-   Cria uma cópia idêntica do retângulo, retornando um ponteiro para o novo retângulo com os mesmos atributos.
-*/
-
 double getXRetangulo(Retangulo r);
 /*
    Retorna a coordenada X da âncora do retangulo.
@@ -49,26 +40,11 @@ double getYRetangulo(Retangulo r);
    Retorna a coordenada Y da âncora do retangulo.
 */
 
-char* getCorBRetangulo(Retangulo r);
+double getArestaRetangulo(Retangulo r, char c);
 /*
-   Retorna a cor de borda do retangulo, descrita no padrão sRGB de 6 dígitos.
-   ATENÇÃO: O chamador é responsável por liberar a memória retornada.
-*/
-
-char* getCorPRetangulo(Retangulo r);
-/*
-   Retorna a cor de preenchimento do retangulo, descrita no padrão sRGB de 6 dígitos.
-   ATENÇÃO: O chamador é responsável por liberar a memória retornada.
-*/
-
-double getLarguraRetangulo(Retangulo r);
-/*
-   Retorna a largura do retângulo.
-*/
-
-double getAlturaRetangulo(Retangulo r);
-/*
-   Retorna a altura do retângulo.
+   Recebe um retângulo na qual queremos obter uma de suas arestas.
+   Recebe um character indicando qual aresta a função deve obter, baseado na orientação (Norte para baixo)
+   Retorna ??? da aresta obtida.
 */
 
 int validaRetangulo(void* r);
