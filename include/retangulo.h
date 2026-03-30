@@ -89,7 +89,8 @@ void setCorPRetangulo(Retangulo r, char* novaCor);
 
 void liberaRetangulo(Retangulo r);
 /*
-   Libera toda a memória associada ao retangulo passado como parâmetro.Essa função deve ser utilizada sempre que o retangulo não for mais necessário.
+   Libera toda a memória associada ao retangulo passado como parâmetro.
+   Essa função deve ser utilizada sempre que o retangulo não for mais necessário.
 */
 
 #endif
