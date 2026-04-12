@@ -1,132 +1,130 @@
 #ifndef HASHFILE_H
 #define HASHFILE_H
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <stddef.h>
+#include <stdint.h>
 
 /*
    Este TAD contém a documentação do HashFile extensível. 
    Um HashFile extensível é um método de armazenamento em dispositivos de memória secundários, tendo como exemplo mais notável, o disco rígido.
    Permite gerenciar de forma dinâmica o espalhamento a depender se necessita diminuir/aumentar o espaço reservado, de forma automática.
-   
+
+   Por meio da função criarHF, cria-se um HashFile, com as especificações descritas em tal função.
+   Pode ser encerrado com a função freeHF.
+   Possui demais operações importantes (inserir, procurar item, deletar item, etc).
 */
 
-typedef void* HashFile;
-typedef void* Bucket;
-typedef void* Diretorio;
+typedef struct HashFileStruct HashFile;
 
-HashFile createHashFile(int tamBucket, int profundidadeInicial);
+HashFile* criarHF(const char *nomeBase, int tamBucket, int profInicial);
 /*
-Função para criar o HashFile.
-Possui como parâmetros o número máximo de elementos por bucket e a profundidade inicial, respectivamente.
+Função para criar ou abrir um HashFile existente.
+Primeiro parâmetro é o nome base para os arquivos (sem extensão).
+Segundo parâmetro é o número máximo de elementos por bucket.
+Terceiro parâmetro é a profundidade global inicial.
 Retorna um ponteiro para o HashFile, ou NULL em caso de erro.
 */
 
-int inserirItemHash(HashFile hf, int chave, int valor);
+void freeHF(HashFile *hf);
 /*
-Função para inserir um item no HashFile.
+Função para fechar o HashFile e liberar toda a memória alocada.
+Persiste todas as alterações pendentes em disco.
 Primeiro parâmetro é o ponteiro para o HashFile.
-Segundo parâmetro a chave na qual será inserida o item.
-Terceiro parâmetro o valor a ser inserido.
-Retorna 1 caso a operação tenha sido bem sucedida, 0 caso contrário.
 */
 
-int buscaItemHash(HashFile hf, int chave, int *valor);
+int insertHF(HashFile *hf, const char *chave, const void *dado, size_t tamDado);
 /*
-Função para procurar um item específico por meio de sua chave.
+Função para inserir um registro no HashFile.
+Primeiro parâmetro é o ponteiro para o HashFile.
+Segundo parâmetro é a chave alfanumérica (string) para indexação.
+Terceiro parâmetro é um ponteiro para os dados a serem armazenados.
+Quarto parâmetro é o tamanho em bytes do dado.
+Retorna 1 caso a operação tenha sido bem sucedida, 0 se a chave já existe, -1 em caso de erro.
+*/
+
+int buscaHF(HashFile *hf, const char *chave, void *dadoSaida, size_t *tamSaida);
+/*
+Função para procurar um registro específico por meio de sua chave.
 Primeiro parâmetro é o ponteiro para o HashFile.
 Segundo parâmetro é a chave a ser buscada.
-Terceiro parâmetro é um ponteiro para int onde o valor será armazenado.
-Retorna 1 caso encontre, 0 caso contrário.
+Terceiro parâmetro é um ponteiro para o buffer onde os dados serão copiados (pode ser NULL).
+Quarto parâmetro é o tamanho do buffer (entrada) / tamanho real do dado (saída).
+Retorna 1 caso encontre, 0 caso contrário, -1 em caso de erro.
 */
 
-int deletarItemHash(HashFile hf, int chave);
+int deletarItemHF(HashFile *hf, const char *chave);
 /*
-Função para deletar um item por meio da chave.
+Função para remover um registro por meio da chave.
 Primeiro parâmetro é o ponteiro para o HashFile.
 Segundo parâmetro é a chave a ser removida.
-Retorna 1 caso sucedido, 0 caso contrário.
+Retorna 1 caso sucedido, 0 se não encontrado, -1 em caso de erro.
 */
 
-int dobraDiretorio(HashFile hf);
+int refreshHF(HashFile *hf, const char *chave, const void *novoDado, size_t tamDado);
 /*
-Função para dobrar a capacidade do diretório.
+Função para atualizar um registro existente.
 Primeiro parâmetro é o ponteiro para o HashFile.
-Retorna 1 caso operação tenha sido bem sucedida, 0 em caso de falha.
+Segundo parâmetro é a chave do registro a ser atualizado.
+Terceiro parâmetro é um ponteiro para os novos dados.
+Quarto parâmetro é o tamanho em bytes dos novos dados.
+Retorna 1 caso a operação tenha sido bem sucedida, 0 se não encontrado, -1 em caso de erro.
 */
 
-int splitBucket(HashFile hf, int indice);
+int gerarDumpHF(HashFile *hf);
 /*
-Função para dividir e redistribuir automaticamente um bucket.
+Função para gerar o arquivo de dump legível (.hfd) mostrando a estrutura do HashFile.
+Registra as expansões dos buckets e o estado atual do diretório.
 Primeiro parâmetro é o ponteiro para o HashFile.
-Segundo parâmetro é o índice do bucket a ser dividido.
-Retorna 1 caso tenha sucesso, 0 caso falhe.
+Retorna 1 caso tenha sido gerado com sucesso, 0 em caso de erro.
 */
 
-Bucket createBucket(int nivel);
+size_t totalRegistrosHF(const HashFile *hf);
 /*
-Função para criar um novo bucket na profundidade repassada pelo parâmetro.
-Primeiro parâmetro é a profundidade local do bucket.
-Retorna um ponteiro para tal bucket caso criado corretamente.
-Retorna NULL caso ocorra algum erro.
-*/
-
-void freeHash(HashFile hf);
-/*
-Função para liberar o HashFile.
+Função para obter o número total de registros armazenados no HashFile.
 Primeiro parâmetro é o ponteiro para o HashFile.
+Retorna o total de registros, ou 0 em caso de erro.
 */
 
-int getTamanhoBucket(HashFile hf);
-/*
-Função para obter a capacidade máxima de um bucket.
-Primeiro parâmetro é o ponteiro para o HashFile.
-Retorna o tamanho do bucket, ou -1 em caso de erro.
-*/
-
-int getProfundidadeGlobal(HashFile hf);
+int getProfGlobalHF(const HashFile *hf);
 /*
 Função para obter a profundidade global atual do diretório.
 Primeiro parâmetro é o ponteiro para o HashFile.
 Retorna a profundidade global, ou -1 em caso de erro.
 */
 
-int getTamanhoDiretorio(HashFile hf);
+int getTamBucketHF(const HashFile *hf);
 /*
-Função para obter o número de entradas no diretório.
+Função para obter a capacidade máxima de registros por bucket.
 Primeiro parâmetro é o ponteiro para o HashFile.
-Retorna o tamanho do diretório, ou -1 em caso de erro.
+Retorna a capacidade do bucket, ou -1 em caso de erro.
 */
 
-int getProfundidadeBucket(HashFile hf, int indice);
+int getInfoBucketHF(const HashFile *hf, int indiceBucket, int *qtdRegistros, int *profLocal);
 /*
-Função para obter a profundidade local de um bucket específico.
+Função para obter informações de um bucket específico.
 Primeiro parâmetro é o ponteiro para o HashFile.
 Segundo parâmetro é o índice do bucket no diretório.
-Retorna a profundidade do bucket, ou -1 em caso de erro.
+Terceiro parâmetro é um ponteiro para int onde a quantidade de registros será armazenada.
+Quarto parâmetro é um ponteiro para int onde a profundidade local será armazenada.
+Retorna 1 caso sucesso, 0 se índice inválido, -1 em caso de erro.
 */
 
-int getQuantidadeBucket(HashFile hf, int indice);
+typedef void (*hf_Callback)(const char *chave, const void *dado, size_t tamDado, void *contexto);
 /*
-Função para obter o número de elementos armazenados em um bucket.
-Primeiro parâmetro é o ponteiro para o HashFile.
-Segundo parâmetro é o índice do bucket no diretório.
-Retorna a quantidade de elementos, ou -1 em caso de erro.
+Tipo para função de callback usada na iteração sobre os registros do HashFile.
+Primeiro parâmetro é a chave do registro.
+Segundo parâmetro é um ponteiro para os dados do registro.
+Terceiro parâmetro é o tamanho em bytes dos dados.
+Quarto parâmetro é um ponteiro para dados de contexto fornecidos pelo usuário.
 */
 
-int bucketEstaCheio(HashFile hf, int indice);
+int registrosHF(HashFile *hf, hf_Callback callback, void *contexto);
 /*
-Função para verificar se um bucket atingiu sua capacidade máxima.
+Função para iterar sobre todos os registros do HashFile.
 Primeiro parâmetro é o ponteiro para o HashFile.
-Segundo parâmetro é o índice do bucket no diretório.
-Retorna 1 se cheio, 0 caso contrário, -1 em caso de erro.
-*/
-
-int getTotalElementos(HashFile hf);
-/*
-Função para obter o número total de elementos no HashFile.
-Primeiro parâmetro é o ponteiro para o HashFile.
-Retorna o total de elementos, ou -1 em caso de erro.
+Segundo parâmetro é a função de callback que será chamada para cada registro.
+Terceiro parâmetro é um ponteiro para dados de contexto (pode ser NULL).
+Retorna o número de registros processados, ou -1 em caso de erro.
 */
 
 #endif
