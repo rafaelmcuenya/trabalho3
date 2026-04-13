@@ -1,74 +1,175 @@
-#ifndef RETANGULO_H
-#define RETANGULO_H
+#ifndef QUADRA_H
+#define QUADRA_H
 
+#include <stddef.h>
 #include <stdio.h>
 
 /*
-   Um retângulo é uma forma geométrica composta por quatro pontos distintos entre si, interligados por segmentos de reta, e postos em um plano. 
-   Tal forma possui uma âncora, uma cor de preenchimento e uma cor de borda.
-   A âncora é dada pelo ponto criado mais próximo do ponto de origem (0,0).
-   As cores de borda e preenchimento são descritas utilizando o padrão sRGB de 6 dígitos.
+   Uma quadra é representada por um retângulo com âncora no vértice sudeste, seguindo a orientação da roda dos ventos descrita no projeto.
+   Possui um CEP alfanumérico que a identifica e diferencia das demais quadras existentes.
+   Cada quadra possui 4 faces, nomeadas de acordo com o ponto cardeal correspondente (N, S, L ou O).
+   As cores presentes na quadra devem seguir o padrão sRGB de 6 dígitos (ex: "#FF0000").
+   É possível criar/deletar quadras or meio das funções criaQuadra e freeQuadra, respectivamente.
+   As demais funções são para funcionamento interno (criação no SVG, outros módulos, etc).
 */
 
-typedef void* Retangulo;
+typedef void* Quadra;
 
-Retangulo criaRetangulo(int i, double x, double y, double w, double h, char* corb, char* corp);
+Quadra criaQuadra(char *cep, double x, double y, double l, double h, char *corB,  char *corP, double espB);
 /*
-   Cria um retângulo com a âncora posicionada nos dados repassados pelos parâmetros 3 e 4, com tal forma possuindo um ID dado pelo primeiro parâmetro. 
-   O mesmo terá comprimento e altura das informações enviadas pelos 4° e 5° parâmetros, respectivamente.
-   As cores de borda e preenchimento são enviadas por meio dos parâmetros 6 e 7, e retorna um ponteiro para a forma recém criada.
+Cria uma quadra com âncora no vértice sudeste (x,y).
+Primeiro parâmetro é o CEP alfanumérico da quadra.
+Segundo e terceiro parâmetros são as coordenadas x e y da âncora.
+Quarto parâmetro é a largura da quadra.
+Quinto parâmetro é a altura da quadra.
+Sexto parâmetro é a cor da borda.
+Sétimo parâmetro é a cor de preenchimento.
+Oitavo parâmetro é a espessura da borda.
+Retorna um ponteiro para a quadra criada, ou NULL em caso de algum erro.
 */
 
-double areaRetangulo(Retangulo r);
+ char* getCepQuadra(Quadra q);
 /*
-   Calcula a área de um retângulo, baseando-se na fórmula geral dada por A = l*c, sendo 'c' o comprimento do retângulo, 'A' a área final e 'l' a largura do mesmo.
+Retorna o CEP da quadra repassada pelo parâmetro
 */
 
-int idRetangulo(Retangulo r);
+double getXQuadra(Quadra q);
 /*
-   Coleta o ID de um retângulo específico para possíveis manipulações no mesmo, retornando tal identificador.
+Retorna a coordenada X da âncora da quadra repassada pelo parâmetro.
 */
 
-double getXRetangulo(Retangulo r);
+double getYQuadra(Quadra q);
 /*
-   Retorna a coordenada X da âncora do retangulo.
+Retorna a coordenada Y da âncora da quadra repassada pelo parâmetro.
 */
 
-double getYRetangulo(Retangulo r);
+double getLQuadra(Quadra q);
 /*
-   Retorna a coordenada Y da âncora do retangulo.
+Retorna a largura da quadra repassada pelo parâmetro.
 */
 
-double getLarguraRetangulo(Retangulo r);
+double getHQuadra(Quadra q);
 /*
-   Retorna a largura do retângulo.
+Retorna a altura da quadra repassada pelo parâmetro.
 */
 
-double getAlturaRetangulo(Retangulo r);
+ char* getCorBQuadra(Quadra q);
 /*
-   Retorna a altura do retângulo.
+Retorna a cor da borda da quadra repassada pelo parâmetro.
 */
 
-int validaRetangulo(void* r);
+ char* getCorPQuadra(Quadra q);
 /*
-   Função interna de validação para verificar se uma estrutura de retângulo é válida.
-   Retorna 1 se válido, 0 caso contrário.
+Retorna a cor de preenchimento da quadra repassada pelo parâmetro.
 */
 
-void setCorBRetangulo(Retangulo r, char* novaCor);
+double getEspBQuadra(Quadra q);
 /*
-   Altera a cor da borda do retângulo.
+Retorna a espessura da borda da quadra repassada pelo parâmetro.
 */
 
-void setCorPRetangulo(Retangulo r, char* novaCor);
+double getXSVGQuadra(Quadra q);
 /*
-   Altera a cor de preenchimento do retângulo.
+Retorna a coordenada X do canto superior esquerdo para desenho SVG da quadra repassada pelo parâmetro.
 */
 
-void liberaRetangulo(Retangulo r);
+double getYSVGQuadra(Quadra q);
 /*
-   Libera toda a memória associada ao retangulo passado como parâmetro.
-   Essa função deve ser utilizada sempre que o retangulo não for mais necessário.
+Retorna a coordenada Y do canto superior esquerdo para desenho SVG da quadra repassada pelo parâmetro.
+*/
+
+double getXFaceQuadra(Quadra q, char face);
+/*
+Calcula a coordenada X da âncora de uma face específica.
+Primeiro parâmetro é o ponteiro para a quadra.
+Segundo parâmetro é a face desejada.
+Retorna a coordenada X, ou -1 em caso de face inválida.
+*/
+
+double getYFaceQuadra(Quadra q, char face);
+/*
+Calcula a coordenada Y da âncora de uma face específica.
+Primeiro parâmetro é o ponteiro para a quadra.
+Segundo parâmetro é a face desejada.
+Retorna a coordenada Y, ou -1 em caso de face inválida.
+*/
+
+void getPontoEndQuadra(Quadra q, char face, double num, double *x, double *y);
+/*
+Calcula a posição (x,y) de um endereço na quadra.
+Primeiro parâmetro é o ponteiro para a quadra.
+Segundo parâmetro é a face.
+Terceiro parâmetro é o número da casa (distância da âncora da face).
+Quarto e quinto parâmetros são ponteiros para armazenar as coordenadas x e y calculadas.
+*/
+
+double areaQuadra(Quadra Fq);
+/*
+Calcula a área da quadra repassada pelo parâmetro.
+Retorna a área (Largura x Altura).
+*/
+
+void setCorBQuadra(Quadra q,  char *novaCor);
+/*
+Altera a cor da borda da quadra.
+Primeiro parâmetro é o ponteiro para a quadra.
+Segundo parâmetro é a nova cor a ser colocada.
+*/
+
+void setCorPQuadra(Quadra q,  char *novaCor);
+/*
+Altera a cor de preenchimento da quadra.
+Primeiro parâmetro é o ponteiro para a quadra.
+Segundo parâmetro é a nova cor a ser colocada.
+*/
+
+void setEspBQuadra(Quadra q, double novaEspessura);
+/*
+Altera a espessura da borda da quadra.
+Primeiro parâmetro é o ponteiro para a quadra.
+Segundo parâmetro é a nova espessura a ser colocad.
+*/
+
+int validaFace(char face);
+/*
+Verifica se um caractere representa uma face válida, repassada pelo parâmetro.
+Retorna 1 se válido, 0 caso contrário.
+*/
+
+int validaCor(char *cor);
+/*
+Verifica se uma string está no formato válido de cor (ex: "#RRGGBB").
+Primeiro parâmetro é a string a ser validada.
+Retorna 1 se válido, 0 caso contrário.
+*/
+
+sizeT tamSerialQuadra(void);
+/*
+Retorna o tamanho em bytes necessário para serializar uma quadra.
+*/
+
+int serialQuadra(Quadra q, void *buffer, sizeT tamBuffer);
+/*
+Serializa a quadra em um buffer de bytes para armazenamento no HashFile.
+Primeiro parâmetro é o ponteiro para a quadra.
+Segundo parâmetro é o buffer de destino.
+Terceiro parâmetro é o tamanho do buffer.
+Retorna 1 caso sucesso, 0 caso contrário.
+*/
+
+Quadra* desserialQuadra(void *buffer, sizeT tamBuffer);
+/*
+Reconstrói uma quadra a partir de um buffer de bytes.
+Primeiro parâmetro é o buffer contendo os dados serializados.
+Segundo parâmetro é o tamanho do buffer.
+Retorna um ponteiro para a quadra reconstruída, ou NULL em caso de erro.
+*/
+
+void freeQuadra(Quadra q);
+/*
+Libera toda a memória associada à quadra.
+Primeiro parâmetro é o ponteiro para a quadra.
 */
 
 #endif
+
