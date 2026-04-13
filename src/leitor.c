@@ -2,13 +2,14 @@
 #include <string.h>
 #include <ctype.h>
 #include "quadra.h"
-#include "linha.h"
-#include "texto.h"
-#include "sobrepor.h"
 #include "strdupi.h"
+/*
 #include "criarTxt.h"
 #include "criarSvg.h"
 #include "trataNomeArquivo.h"
+
+Implementar dps usando de base os projetos anteriores
+*/
 
 static void construirCaminhoCompleto(const char* baseDir, const char* arquivo, char* caminhoCompleto){
     if(!baseDir || strlen(baseDir) == 0){
@@ -23,71 +24,24 @@ static void construirCaminhoCompleto(const char* baseDir, const char* arquivo, c
     }
 }
 
-static Chao chao = NULL;
-static Arena arena = NULL;
-static Disparador disparadores[100] ={0};
-static Carregador carregadores[100] ={0};
-
+/*
 static double pontuacaoFinal = 0.0;
 static int totalInstrucoes = 0;
 static int totalDisparos = 0;
 static int totalEsmagadas = 0;
 static int totalClonadas = 0;
 
-static char currentFontFamily[32] = "sans";
-static char currentFontWeight[8] = "n";
-static double currentFontSize = 12.0;
+Dar rework dps
+cep é alfanumérico
+*/
 
-static void cmdCriaCirculo(int id, double x, double y, double r, char corb[], char corp[]){
-    totalInstrucoes++;
-    Circulo circulo = criaCirculo(id, x, y, r, corb, corp);
-    if (circulo && chao){
-        Forma forma = criaForma(Tc, circulo);
-        inFormaChao(chao, forma);
-        printf("[GEO] Círculo %d criado em (%.2f, %.2f) raio %.2f\n", id, x, y, r);
-    }
+static void cmdQ(inte cep, double x, double y, double l, double h, char corb[], char corp[], double espB){
+    Quadra quadra = criaQuadra(cep, x, y, l, h, corb, corp, espB);
+    printf("[GEO] Quadra %d criada em (%.2f, %.2f) dim %.2fx%.2f\n", cep, x, y, l, h);
 }
 
-static void cmdCriaRetangulo(int id, double x, double y, double w, double h, char corb[], char corp[]){
-    totalInstrucoes++;
-    Retangulo retangulo = criaRetangulo(id, x, y, w, h, corb, corp);
-    if (retangulo && chao){
-        Forma forma = criaForma(Tr, retangulo);
-        inFormaChao(chao, forma);
-        printf("[GEO] Retângulo %d criado em (%.2f, %.2f) dim %.2fx%.2f\n", id, x, y, w, h);
-    }
-}
-
-static void cmdCriaLinha(int id, double x1, double y1, double x2, double y2, char cor[]){
-    totalInstrucoes++;
-    Linha linha = criaLinha(id, x1, y1, x2, y2, cor);
-    if (linha && chao){
-        Forma forma = criaForma(Tl, linha);
-        inFormaChao(chao, forma);
-        printf("[GEO] Linha %d criada de (%.2f,%.2f) até (%.2f,%.2f)\n", id, x1, y1, x2, y2);
-    }
-}
-
-static void cmdCriaTexto(int id, double x, double y, char corb[], char corp[], char anchor, char texto[]){
-    totalInstrucoes++;
-    Texto textoObj = criaTexto(id, x, y, corb, corp, anchor, texto);
-    if (textoObj && chao){
-        aplicaStyleTexto(textoObj, currentFontFamily, currentFontWeight, currentFontSize);
-        Forma forma = criaForma(Tt, textoObj);
-        inFormaChao(chao, forma);
-        printf("[GEO] Texto %d: '%s' em (%.2f,%.2f) anchor=%c\n", id, texto, x, y, anchor);
-    }
-}
-
-static void cmdTextoStyle(char family[], char weight[], double size){
-    totalInstrucoes++;
-    strcpy(currentFontFamily, family);
-    strcpy(currentFontWeight, weight);
-    currentFontSize = size;
-    printf("[GEO] Estilo texto: family=%s weight=%s size=%.1f\n", family, weight, size);
-}
-
-static void cmdPD(int idDisp, double x, double y){
+/*
+static void cmdCQ(int idDisp, double x, double y){
     totalInstrucoes++;
     if (idDisp >= 0 && idDisp < 100){
         disparadores[idDisp] = criaDisparador(idDisp, x, y);
@@ -95,188 +49,64 @@ static void cmdPD(int idDisp, double x, double y){
     }
 }
 
-static void cmdATCH(int idDisp, int idCesq, int idCdir){
-    totalInstrucoes++;
-    
-    if (idDisp < 0 || idDisp >= 100 || !disparadores[idDisp]){
-        printf("[ERRO] Disparador %d não encontrado\n", idDisp);
-        return;
-    }
+Dar rework após alterar módulo quadra e usar método semelhante do Text Style dos projetos anteriores.
+*/
 
-    if (idCesq < 0 || idCesq >= 100){
-        printf("[ERRO] ID de carregador esquerdo inválido: %d\n", idCesq);
-        return;
-    }
-    if (!carregadores[idCesq]){
-        carregadores[idCesq] = criaCarregador(idCesq);
-        printf("[QRY] Carregador %d (esq) criado vazio\n", idCesq);
-    }
 
-    if (idCdir < 0 || idCdir >= 100){
-        printf("[ERRO] ID de carregador direito inválido: %d\n", idCdir);
-        return;
-    }
-    if (!carregadores[idCdir]){
-        carregadores[idCdir] = criaCarregador(idCdir);
-        printf("[QRY] Carregador %d (dir) criado vazio\n", idCdir);
-    }
-    
-    encaixaCarregadores(disparadores[idDisp], carregadores[idCesq], carregadores[idCdir]);
-    printf("[QRY] Disparador %d: carregadores %d(esq) e %d(dir) encaixados\n", 
-           idDisp, idCesq, idCdir);
+
+
+static void cmdP(int cpf, char nome[], char sobrenome[], char sexo, int nasc){  
+    //Implementar dps, 2 registros distintos para morador/habitante, ou 1 registro com 1 bit especifico q diferencia
 }
 
-static void cmdLC(int idCarregador, int n){
-    totalInstrucoes++;
-    if (idCarregador >= 0 && idCarregador < 100){
-        if (carregadores[idCarregador]){
-            printf("[ERRO] Carregador %d já existe\n", idCarregador);
-            return;
-        }
-        
-        carregadores[idCarregador] = criaCarregador(idCarregador);
-        if (chao && carregadores[idCarregador]){
-            int formasCarregadas = 0;
-            for (int i = 0; i < n && !voidChao(chao); i++){
-                Forma forma = outFormaChao(chao);
-                if (forma){
-                    empilhaCarregador(carregadores[idCarregador], forma);
-                    formasCarregadas++;
-                }
-            }
-            printf("[QRY] Carregador %d: %d formas carregadas do chão\n", idCarregador, formasCarregadas);
-            
-            if (formasCarregadas < n){
-                printf("[AVISO] Chão tinha apenas %d formas (solicitadas: %d)\n", formasCarregadas, n);
-            }
-        }
-    } else{
-        printf("[ERRO] ID de carregador inválido: %d\n", idCarregador);
-    }
+static void cmdM(int cpf, inte cep, char face, int num, char[] cmpl){
+    //Implementar dps
 }
 
-static void cmdSHFT(int idDisp, char botao, int n){
-    totalInstrucoes++;
-    if (disparadores[idDisp]){
-        shftDisparador(disparadores[idDisp], botao, n);
-        Forma forma = getPosDisparo(disparadores[idDisp]);
-        if (forma){
-            printf("[QRY] Shift %c: forma %d em posição de disparo\n", 
-                   botao, getIdForma(forma));
-        }
-    }
+
+
+
+static void cmdRQ(inte cep){
+    //Implementar dps
 }
 
-static void cmdDSP(int idDisp, double dx, double dy, bool svgFlag){
-    totalInstrucoes++;
-    totalDisparos++;
-    
-    if (disparadores[idDisp] && arena){
-        Forma forma = disparaForma(disparadores[idDisp], dx, dy);
-        if (forma){
-            insereFormaArena(arena, forma);
-            printf("[QRY] Disparo: forma %d em arena com offset (%.2f,%.2f)\n", 
-                   getIdForma(forma), dx, dy);
-            
-            if (svgFlag){
-                printf("[SVG] Anotar dimensões do disparo\n");
-            }
-        }
-    }
+static void cmdPQ(inte cep){
+    //Implementar dps
 }
 
-static void cmdRJD(int idDisp, char lado, double dx, double dy, double ix, double iy){
-    totalInstrucoes++;
-    
-    if (idDisp < 0 || idDisp >= 100 || !disparadores[idDisp]){
-        printf("[ERRO] Disparador %d não encontrado\n", idDisp);
-        return;
-    }
-    
-    if (lado != 'd' && lado != 'e'){
-        printf("[ERRO] Lado inválido para rajada: %c\n", lado);
-        return;
-    }
-    
-    if (!arena){
-        printf("[ERRO] Arena não inicializada\n");
-        return;
-    }
-
-    printf("[QRY] Iniciando rajada no disparador %d, lado %c\n", idDisp, lado);
-    int disparos = 0;
-    int maxDisparos = 100;
-
-    if (!possuiCarregadorEsq(disparadores[idDisp]) || !possuiCarregadorDir(disparadores[idDisp])){
-        printf("[ERRO] Disparador %d não tem carregadores encaixados\n", idDisp);
-        return;
-    }
-
-    for (int i = 0; i < maxDisparos; i++){
-        shftDisparador(disparadores[idDisp], lado, 1);
-        Forma forma = getPosDisparo(disparadores[idDisp]);
-    
-        if (!forma){
-            break;
-        }
-
-        double currentDx = dx + i * ix;
-        double currentDy = dy + i * iy;
-        Forma formaDisparada = disparaForma(disparadores[idDisp], currentDx, currentDy);
-        
-        if (formaDisparada){
-            insereFormaArena(arena, formaDisparada);
-            printf("[QRY] Rajada %d: forma %d disparada\n", i, getIdForma(formaDisparada));
-            disparos++;
-            totalDisparos++;
-        } else{
-            break;
-        }
-    }
-    printf("[QRY] Rajada concluída: %d disparos realizados\n", disparos);
+static void cmdCenso(???){
+    //Implementar dps
 }
 
-static void cmdCALC(const char* nomeBase, const char* outputDir){
-    totalInstrucoes++;
-    if (arena){
-        printf("[QRY] Calculando sobreposições na arena...\n");
-        
-        double pontuacaoRound = 0.0;
-        int esmagadasRound = 0;
-        int clonadasRound = 0;
-        processaArena(arena, chao, &pontuacaoRound, &esmagadasRound, &clonadasRound, nomeBase, outputDir);
-        pontuacaoFinal += pontuacaoRound;
-        totalEsmagadas += esmagadasRound;
-        totalClonadas += clonadasRound;
-        
-        printf("[CALC] Área esmagada neste round: %.2f\n", pontuacaoRound);
-        printf("[CALC] Formas esmagadas: %d\n", esmagadasRound);
-        printf("[CALC] Formas clonadas: %d\n", clonadasRound);
-    }
+static void cmdH(int cpf){
+    //Implementar dps
+}
+
+static void cmdNasc(int cpf, char[] nome, char[] sobrenome, char sexo, int nasc){
+    //Implementar dps
+}
+
+static void cmdRIP(int cpf){
+    //Implementar dps
+}
+
+static void cmdMud(int cpf, inte cep, char face, int num, char[] cmpl){
+    //Implementar dps
+}
+
+static void cmdDspj(int cpf){
+    //Implementar dps
 }
 
 void inicializarSistema(void){
-    chao = criaChao();
-    arena = criaArena();
+    //Implementar dps, se for necessário
     printf("[SISTEMA] Sistema inicializado\n");
 }
 
 void finalizarSistema(void){
-    if (chao) freeChao(chao);
-    if (arena) liberaArena(arena);
-    
-    for (int i = 0; i < 100; i++){
-        if (disparadores[i]) freeDisparador(disparadores[i]);
-        if (carregadores[i]) freeCarregador(carregadores[i]);
-    }
+    //Implementar dps, msm caso acima
     printf("[SISTEMA] Sistema finalizado\n");
 }
-
-double getPontuacaoFinal(void){ return pontuacaoFinal; }
-int getTotalInstrucoes(void){ return totalInstrucoes; }
-int getTotalDisparos(void){ return totalDisparos; }
-int getTotalEsmagadas(void){ return totalEsmagadas; }
-int getTotalClonadas(void){ return totalClonadas; }
 
 void abrirArquivo(FILE **f, const char *caminho){
     *f = fopen(caminho, "r");
@@ -300,9 +130,9 @@ void processarComando(const char* linha, int ehQry, const char* nomeBase, const 
             }
         }
         else if (strcmp(comando, "r") == 0){
-            int id; double x, y, w, h; char corb[32], corp[32];
-            if (sscanf(linha, "%*s %d %lf %lf %lf %lf %31s %31s", &id, &x, &y, &w, &h, corb, corp) == 7){
-                cmdCriaRetangulo(id, x, y, w, h, corb, corp);
+            int id; double x, y, l, h; char corb[32], corp[32];
+            if (sscanf(linha, "%*s %d %lf %lf %lf %lf %31s %31s", &id, &x, &y, &l, &h, corb, corp) == 7){
+                cmdCriaRetangulo(id, x, y, l, h, corb, corp);
             }
         }
         else if (strcmp(comando, "l") == 0){
@@ -323,7 +153,7 @@ void processarComando(const char* linha, int ehQry, const char* nomeBase, const 
                 cmdTextoStyle(family, weight, size);
             }
         }
-    } else{
+    }else if{
         if (strcmp(comando, "pd") == 0){
             int id; double x, y;
             if (sscanf(linha, "%*s %d %lf %lf", &id, &x, &y) == 3){
