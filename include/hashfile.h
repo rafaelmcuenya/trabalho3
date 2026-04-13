@@ -32,7 +32,7 @@ Persiste todas as alterações pendentes em disco.
 Primeiro parâmetro é o ponteiro para o HashFile.
 */
 
-int insertHF(HashFile *hf, const char *chave, const void *dado, size_t tamDado);
+int insertHF(HashFile *hf, const char *chave, const void *dado, sizeT tamDado);
 /*
 Função para inserir um registro no HashFile.
 Primeiro parâmetro é o ponteiro para o HashFile.
@@ -42,7 +42,7 @@ Quarto parâmetro é o tamanho em bytes do dado.
 Retorna 1 caso a operação tenha sido bem sucedida, 0 se a chave já existe, -1 em caso de erro.
 */
 
-int buscaHF(HashFile *hf, const char *chave, void *dadoSaida, size_t *tamSaida);
+int buscaHF(HashFile *hf, const char *chave, void *dadoSaida, sizeT *tamSaida);
 /*
 Função para procurar um registro específico por meio de sua chave.
 Primeiro parâmetro é o ponteiro para o HashFile.
@@ -60,7 +60,7 @@ Segundo parâmetro é a chave a ser removida.
 Retorna 1 caso sucedido, 0 se não encontrado, -1 em caso de erro.
 */
 
-int refreshHF(HashFile *hf, const char *chave, const void *novoDado, size_t tamDado);
+int refreshHF(HashFile *hf, const char *chave, const void *novoDado, sizeT tamDado);
 /*
 Função para atualizar um registro existente.
 Primeiro parâmetro é o ponteiro para o HashFile.
@@ -78,7 +78,7 @@ Primeiro parâmetro é o ponteiro para o HashFile.
 Retorna 1 caso tenha sido gerado com sucesso, 0 em caso de erro.
 */
 
-size_t totalRegistrosHF(const HashFile *hf);
+sizeT totalRegistrosHF(const HashFile *hf);
 /*
 Função para obter o número total de registros armazenados no HashFile.
 Primeiro parâmetro é o ponteiro para o HashFile.
@@ -109,7 +109,7 @@ Quarto parâmetro é um ponteiro para int onde a profundidade local será armaze
 Retorna 1 caso sucesso, 0 se índice inválido, -1 em caso de erro.
 */
 
-typedef void (*hf_Callback)(const char *chave, const void *dado, size_t tamDado, void *contexto);
+typedef void (*hf_Callback)(const char *chave, const void *dado, sizeT tamDado, void *contexto);
 /*
 Tipo para função de callback usada na iteração sobre os registros do HashFile.
 Primeiro parâmetro é a chave do registro.
