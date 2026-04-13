@@ -27,7 +27,7 @@ struct HashFileStruct {
     int profGlobal;
     int tamBucket;
     Bucket **diretorio;
-    size_t tamDiretorio;
+    sizeT tamDiretorio;
     int modificado;
 };
 
@@ -69,7 +69,7 @@ static int saveCabecalho(HashFile *hf) {
     rewind(hf->arqCabecalho);
     fwrite(&hf->profGlobal, sizeof(int), 1, hf->arqCabecalho);
     fwrite(&hf->tamBucket, sizeof(int), 1, hf->arqCabecalho);
-    fwrite(&hf->tamDiretorio, sizeof(size_t), 1, hf->arqCabecalho);
+    fwrite(&hf->tamDiretorio, sizeof(sizeT), 1, hf->arqCabecalho);
     fflush(hf->arqCabecalho);
     return 1;
 }
@@ -77,10 +77,10 @@ static int saveCabecalho(HashFile *hf) {
 static int loadCabecalho(HashFile *hf) {
     if (!hf->arqCabecalho) return 0;
     rewind(hf->arqCabecalho);
-    size_t lidos = 0;
+    sizeT lidos = 0;
     lidos += fread(&hf->profGlobal, sizeof(int), 1, hf->arqCabecalho);
     lidos += fread(&hf->tamBucket, sizeof(int), 1, hf->arqCabecalho);
-    lidos += fread(&hf->tamDiretorio, sizeof(size_t), 1, hf->arqCabecalho);
+    lidos += fread(&hf->tamDiretorio, sizeof(sizeT), 1, hf->arqCabecalho);
     return lidos == 3;
 }
 
@@ -94,11 +94,11 @@ static Bucket* loadBucket(HashFile *hf, int indice) {
 }
 
 static int dobraDiretorio(HashFile *hf) {
-    size_t newTam = hf->tamDiretorio * 2;
+    sizeT newTam = hf->tamDiretorio * 2;
     Bucket **newDir = (Bucket**)malloc(newTam * sizeof(Bucket*));
     if (!newDir) return 0;
     
-    for (size_t i = 0; i < hf->tamDiretorio; i++) {
+    for (sizeT i = 0; i < hf->tamDiretorio; i++) {
         newDir[i] = hf->diretorio[i];
         newDir[i + hf->tamDiretorio] = hf->diretorio[i];
     }
@@ -150,7 +150,7 @@ static int splitBucket(HashFile *hf, int indice) {
         destino->numRegistros++;
     }
     
-    for (size_t i = 0; i < hf->tamDiretorio; i++) {
+    for (sizeT i = 0; i < hf->tamDiretorio; i++) {
         if (hf->diretorio[i] == oldB) {
             uint32_t h = hashString("");
             int bit = (i >> (newProf - 1)) & 1;
@@ -226,7 +226,7 @@ HashFile* criarHF(const char *nomeBase, int tamBucket, int profInicial) {
         return NULL;
     }
     
-    for (size_t i = 0; i < hf->tamDiretorio; i++) {
+    for (sizeT i = 0; i < hf->tamDiretorio; i++) {
         hf->diretorio[i] = b_inicial;
     }
     
@@ -240,10 +240,10 @@ void freeHF(HashFile *hf) {
     if (!hf) return;
     
     if (hf->diretorio) {
-        for (size_t i = 0; i < hf->tamDiretorio; i++) {
+        for (sizeT i = 0; i < hf->tamDiretorio; i++) {
             if (hf->diretorio[i]) {
                 int unico = 1;
-                for (size_t j = 0; j < i; j++) {
+                for (sizeT j = 0; j < i; j++) {
                     if (hf->diretorio[j] == hf->diretorio[i]) {
                         unico = 0;
                         break;
@@ -263,7 +263,7 @@ void freeHF(HashFile *hf) {
     free(hf);
 }
 
-int insertHF(HashFile *hf, const char *chave, const void *dado, size_t tamDado) {
+int insertHF(HashFile *hf, const char *chave, const void *dado, sizeT tamDado) {
     if (!hf || !chave || !dado || tamDado == 0) return -1;
     
     uint32_t h = hashString(chave);
@@ -314,7 +314,7 @@ int insertHF(HashFile *hf, const char *chave, const void *dado, size_t tamDado) 
     return 1;
 }
 
-int buscaHF(HashFile *hf, const char *chave, void *dadoSaida, size_t *tamSaida) {
+int buscaHF(HashFile *hf, const char *chave, void *dadoSaida, sizeT *tamSaida) {
     if (!hf || !chave) return -1;
     
     uint32_t h = hashString(chave);
@@ -359,7 +359,7 @@ int deletarItremHF(HashFile *hf, const char *chave) {
     return 1;
 }
 
-int refreshHF(HashFile *hf, const char *chave, const void *novoDado, size_t tamDado) {
+int refreshHF(HashFile *hf, const char *chave, const void *novoDado, sizeT tamDado) {
     if (!hf || !chave || !novoDado || tamDado == 0) return -1;
     
     if (deletarItremHF(hf, chave) != 1) return 0;
@@ -384,7 +384,7 @@ int gerarDumpHF(HashFile *hf) {
     fprintf(dump, "Total de registros: %zu\n", totalRegistrosHF(hf));
     fprintf(dump, "\n");
     
-    for (size_t i = 0; i < hf->tamDiretorio; i++) {
+    for (sizeT i = 0; i < hf->tamDiretorio; i++) {
         Bucket *b = hf->diretorio[i];
         fprintf(dump, "Diretorio[%zu] -> Bucket (profLocal=%d, registros=%d)\n", 
                 i, b->profLocal, b->numRegistros);
@@ -401,15 +401,15 @@ int gerarDumpHF(HashFile *hf) {
     return 1;
 }
 
-size_t totalRegistrosHF(const HashFile *hf) {
+sizeT totalRegistrosHF(const HashFile *hf) {
     if (!hf) return 0;
     
-    size_t total = 0;
-    for (size_t i = 0; i < hf->tamDiretorio; i++) {
+    sizeT total = 0;
+    for (sizeT i = 0; i < hf->tamDiretorio; i++) {
         Bucket *b = hf->diretorio[i];
         
         int unico = 1;
-        for (size_t j = 0; j < i; j++) {
+        for (sizeT j = 0; j < i; j++) {
             if (hf->diretorio[j] == b) {
                 unico = 0;
                 break;
@@ -457,11 +457,11 @@ int iterarHF(HashFile *hf, callbackHF callback, void *contexto) {
     void *buffer = malloc(65536);
     if (!buffer) return -1;
     
-    for (size_t i = 0; i < hf->tamDiretorio; i++) {
+    for (sizeT i = 0; i < hf->tamDiretorio; i++) {
         Bucket *b = hf->diretorio[i];
         
         int unico = 1;
-        for (size_t j = 0; j < i; j++) {
+        for (sizeT j = 0; j < i; j++) {
             if (hf->diretorio[j] == b) {
                 unico = 0;
                 break;
