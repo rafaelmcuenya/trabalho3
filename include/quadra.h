@@ -2,7 +2,6 @@
 #define QUADRA_H
 
 #include <stddef.h>
-#include <stdio.h>
 
 /*
    Uma quadra é representada por um retângulo com âncora no vértice sudeste, seguindo a orientação da roda dos ventos descrita no projeto.
@@ -13,9 +12,10 @@
    As demais funções são para funcionamento interno (criação no SVG, outros módulos, etc).
 */
 
+typedef size_t sizeT;
 typedef void* Quadra;
 
-Quadra criaQuadra(char *cep, double x, double y, double l, double h, char *corB,  char *corP, double espB);
+Quadra criaQuadra(const char *cep, double x, double y, double l, double h, const char *corB, const char *corP, double espB);
 /*
 Cria uma quadra com âncora no vértice sudeste (x,y).
 Primeiro parâmetro é o CEP alfanumérico da quadra.
@@ -28,7 +28,7 @@ Oitavo parâmetro é a espessura da borda.
 Retorna um ponteiro para a quadra criada, ou NULL em caso de algum erro.
 */
 
- char* getCepQuadra(Quadra q);
+const char* getCepQuadra(Quadra q);
 /*
 Retorna o CEP da quadra repassada pelo parâmetro
 */
@@ -53,12 +53,12 @@ double getHQuadra(Quadra q);
 Retorna a altura da quadra repassada pelo parâmetro.
 */
 
- char* getCorBQuadra(Quadra q);
+const char* getCorBQuadra(Quadra q);
 /*
 Retorna a cor da borda da quadra repassada pelo parâmetro.
 */
 
- char* getCorPQuadra(Quadra q);
+const char* getCorPQuadra(Quadra q);
 /*
 Retorna a cor de preenchimento da quadra repassada pelo parâmetro.
 */
@@ -103,20 +103,20 @@ Terceiro parâmetro é o número da casa (distância da âncora da face).
 Quarto e quinto parâmetros são ponteiros para armazenar as coordenadas x e y calculadas.
 */
 
-double areaQuadra(Quadra Fq);
+double areaQuadra(Quadra q);
 /*
 Calcula a área da quadra repassada pelo parâmetro.
 Retorna a área (Largura x Altura).
 */
 
-void setCorBQuadra(Quadra q,  char *novaCor);
+void setCorBQuadra(Quadra q, const char *novaCor);
 /*
 Altera a cor da borda da quadra.
 Primeiro parâmetro é o ponteiro para a quadra.
 Segundo parâmetro é a nova cor a ser colocada.
 */
 
-void setCorPQuadra(Quadra q,  char *novaCor);
+void setCorPQuadra(Quadra q, const char *novaCor);
 /*
 Altera a cor de preenchimento da quadra.
 Primeiro parâmetro é o ponteiro para a quadra.
@@ -136,7 +136,7 @@ Verifica se um caractere representa uma face válida, repassada pelo parâmetro.
 Retorna 1 se válido, 0 caso contrário.
 */
 
-int validaCor(char *cor);
+int validaCor(const char *cor);
 /*
 Verifica se uma string está no formato válido de cor (ex: "#RRGGBB").
 Primeiro parâmetro é a string a ser validada.
@@ -157,7 +157,7 @@ Terceiro parâmetro é o tamanho do buffer.
 Retorna 1 caso sucesso, 0 caso contrário.
 */
 
-Quadra* desserialQuadra(void *buffer, sizeT tamBuffer);
+Quadra desserialQuadra(void *buffer, sizeT tamBuffer);
 /*
 Reconstrói uma quadra a partir de um buffer de bytes.
 Primeiro parâmetro é o buffer contendo os dados serializados.
@@ -172,4 +172,3 @@ Primeiro parâmetro é o ponteiro para a quadra.
 */
 
 #endif
-
