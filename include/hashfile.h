@@ -14,6 +14,8 @@
    Possui demais operações importantes (inserir, procurar item, deletar item, etc).
 */
 
+typedef size_t sizeT;
+
 typedef struct HashFileStruct HashFile;
 
 HashFile* criarHF(const char *nomeBase, int tamBucket, int profInicial);
@@ -23,6 +25,12 @@ Primeiro parâmetro é o nome base para os arquivos (sem extensão).
 Segundo parâmetro é o número máximo de elementos por bucket.
 Terceiro parâmetro é a profundidade global inicial.
 Retorna um ponteiro para o HashFile, ou NULL em caso de erro.
+*/
+
+HashFile* abrirHF(const char *nomeBase);
+/*
+Função para abrur um arquivo HashFile baseado no nome repassado pelo parâmetro.
+Retorna um ponteiro para o HashFile (?)
 */
 
 void freeHF(HashFile *hf);
@@ -118,7 +126,7 @@ Terceiro parâmetro é o tamanho em bytes dos dados.
 Quarto parâmetro é um ponteiro para dados de contexto fornecidos pelo usuário.
 */
 
-int registrosHF(HashFile *hf, hf_Callback callback, void *contexto);
+int iterarHF(HashFile *hf, hf_Callback callback, void *contexto);
 /*
 Função para iterar sobre todos os registros do HashFile.
 Primeiro parâmetro é o ponteiro para o HashFile.
