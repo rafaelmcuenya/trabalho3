@@ -11,7 +11,7 @@ typedef struct {
     double largura, altura;
     char corB[8];
     char corP[8];
-    double espessuraBorda;
+    double espBorda;
 } QuadraStruct;
 
 static void preencherCor(char* dest, const char* fonte, const char* corPadrao) {
@@ -52,10 +52,8 @@ int validaCor(char *cor) {
 }
 
 int validaFace(char face) {
-    return (face == 'N' || face == 'n' || 
-            face == 'S' || face == 's' || 
-            face == 'L' || face == 'l' || 
-            face == 'O' || face == 'o');
+    return (face == 'N' || face == 'n' || face == 'S' || face == 's' || 
+            face == 'L' || face == 'l' || face == 'O' || face == 'o');
 }
 
 static char normalizaFace(char face) {
@@ -83,8 +81,7 @@ Quadra criaQuadra(char *cep, double x, double y, double l, double h, char *corB,
         return NULL;
     }
     
-    if (x != x || y != y || isinf(x) || isinf(y) ||
-        l != l || h != h || isinf(l) || isinf(h) || isinf(espB)) {
+    if (x != x || y != y || isinf(x) || isinf(y) || l != l || h != h || isinf(l) || isinf(h) || isinf(espB)) {
         fprintf(stderr, "Erro: coordenadas e/ou dimensões inválida(s)\n");
         return NULL;
     }
@@ -101,7 +98,7 @@ Quadra criaQuadra(char *cep, double x, double y, double l, double h, char *corB,
     q->y = y;
     q->largura = l;
     q->altura = h;
-    q->espessuraBorda = espB;
+    q->espBorda = espB;
   
     preencherCor(q->corB, corB, "000000");
     preencherCor(q->corP, corP, "FFFFFF");
@@ -114,6 +111,7 @@ char* getCepQuadra(Quadra q) {
         fprintf(stderr, "Erro: quadra NULL em getCepQuadra\n");
         return NULL;
     }
+    
     QuadraStruct* quad = (QuadraStruct*)q;
     char* cep = (char*)malloc(strlen(quad->cep) + 1);
     if (cep) {
@@ -192,7 +190,7 @@ double getEspBQuadra(Quadra q) {
         return -1.0;
     }
     QuadraStruct* quad = (QuadraStruct*)q;
-    return quad->espessuraBorda;
+    return quad->espBorda;
 }
 
 double getXSVGQuadra(Quadra q) {
@@ -322,7 +320,7 @@ void setEspBQuadra(Quadra q, double novaEspessura) {
         return;
     }
     QuadraStruct* quad = (QuadraStruct*)q;
-    quad->espessuraBorda = novaEspessura;
+    quad->espBorda = novaEspessura;
 }
 
 size_t tamSerialQuadra(void) {
