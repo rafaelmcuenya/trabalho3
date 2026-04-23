@@ -12,7 +12,6 @@
    As demais funções são para funcionamento interno (criação no SVG, outros módulos, etc).
 */
 
-typedef size_t sizeT;
 typedef void* Quadra;
 
 Quadra criaQuadra(const char *cep, double x, double y, double l, double h, const char *corB, const char *corP, double espB);
@@ -143,12 +142,12 @@ Primeiro parâmetro é a string a ser validada.
 Retorna 1 se válido, 0 caso contrário.
 */
 
-sizeT tamSerialQuadra(void);
+size_t tamSerialQuadra(void);
 /*
 Retorna o tamanho em bytes necessário para serializar uma quadra.
 */
 
-int serialQuadra(Quadra q, void *buffer, sizeT tamBuffer);
+int serialQuadra(Quadra q, void *buffer, size_t tamBuffer);
 /*
 Serializa a quadra em um buffer de bytes para armazenamento no HashFile.
 Primeiro parâmetro é o ponteiro para a quadra.
@@ -157,7 +156,7 @@ Terceiro parâmetro é o tamanho do buffer.
 Retorna 1 caso sucesso, 0 caso contrário.
 */
 
-Quadra desserialQuadra(void *buffer, sizeT tamBuffer);
+Quadra desserialQuadra(void *buffer, size_t tamBuffer);
 /*
 Reconstrói uma quadra a partir de um buffer de bytes.
 Primeiro parâmetro é o buffer contendo os dados serializados.
