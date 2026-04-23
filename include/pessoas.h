@@ -6,9 +6,9 @@
 /*
    Um habitante é uma pessoa que vive em Bitnópolis, podendo ser morador (possui endereço) ou sem-teto (não possui endereço).
    Cada habitante é identificado unicamente por seu CPF.
-   Armazena dados pessoais como nome, sobrenome, sexo e data de nascimento.
+   Cada habitante também possui dados pessoais como nome, sobrenome, sexo e data de nascimento.
    Por meio da função criaHabitante, cria-se um habitante.
-   Pode ser encerrado com a função freeHabitante.
+   Pode liberar espaço na memória com a função freeHabitante.
    Possui demais operações importantes (validação de CPF, serialização para HashFile, etc).
 */
 
