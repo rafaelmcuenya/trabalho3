@@ -5,8 +5,6 @@
 #include <math.h>
 #include <ctype.h>
 
-typedef size_t sizeT;
-
 typedef struct {
     char cep[32];
     double x, y;
@@ -327,11 +325,11 @@ void setEspBQuadra(Quadra q, double novaEspessura) {
     quad->espessuraBorda = novaEspessura;
 }
 
-sizeT tamSerialQuadra(void) {
+size_t tamSerialQuadra(void) {
     return sizeof(QuadraStruct);
 }
 
-int serialQuadra(Quadra q, void *buffer, sizeT tamBuffer) {
+int serialQuadra(Quadra q, void *buffer, size_t tamBuffer) {
     if (!q || !buffer || tamBuffer < sizeof(QuadraStruct)) {
         fprintf(stderr, "Erro: parâmetros inválidos em serialQuadra\n");
         return 0;
@@ -342,7 +340,7 @@ int serialQuadra(Quadra q, void *buffer, sizeT tamBuffer) {
     return 1;
 }
 
-Quadra desserialQuadra(void *buffer, sizeT tamBuffer) {
+Quadra desserialQuadra(void *buffer, size_t tamBuffer) {
     if (!buffer || tamBuffer < sizeof(QuadraStruct)) {
         fprintf(stderr, "Erro: parâmetros inválidos em desserialQuadra\n");
         return NULL;
