@@ -4,6 +4,7 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
+#include "morador.h"
 
 typedef struct {
     char cep[32];
@@ -190,70 +191,6 @@ double getEspBQuadra(Quadra q) {
     return quad->espBorda;
 }
 
-double getXSVGQuadra(Quadra q) {
-    if (!q) {
-        fprintf(stderr, "Erro: quadra NULL em getXSVGQuadra\n");
-        return -1000.0;
-    }
-    QuadraStruct* quad = (QuadraStruct*)q;
-    return quad->x - quad->largura;
-}
-
-double getYSVGQuadra(Quadra q) {
-    if (!q) {
-        fprintf(stderr, "Erro: quadra NULL em getYSVGQuadra\n");
-        return -1000.0;
-    }
-    QuadraStruct* quad = (QuadraStruct*)q;
-    return quad->y - quad->altura;
-}
-
-double getXFaceQuadra(Quadra q, char face) {
-    if (!q || !validaFace(face)) {
-        fprintf(stderr, "Erro: parâmetros inválidos em getXFaceQuadra\n");
-        return -1.0;
-    }
-    QuadraStruct* quad = (QuadraStruct*)q;
-    char f = normalizaFace(face);
-    /*
-    switch (f) {
-        case 'N':
-            return quad->x + quad->largura
-        case 'S':
-            return quad->x + quad->largura
-        case 'L':
-            return quad->x;
-        case 'O':
-            return quad->x - quad->largura;
-        default:
-            return -1.0;
-    }
-}
-
-Revisar isso dps
-*/
-
-double getYFaceQuadra(Quadra q, char face) {
-    if (!q || !validaFace(face)) {
-        fprintf(stderr, "Erro: parâmetros inválidos em getYFaceQuadra\n");
-        return -1.0;
-    }
-    QuadraStruct* quad = (QuadraStruct*)q;
-    char f = normalizaFace(face);
-    
-    switch (f) {
-        case 'L':
-        case 'O':
-            return quad->y - quad->altura / 2.0;
-        case 'N':
-            return quad->y - quad->altura;
-        case 'S':
-            return quad->y;
-        default:
-            return -1.0;
-    }
-}
-
 void getPontoEndQuadra(Quadra q, char face, double num, double *x, double *y) {
     if (!q || !validaFace(face) || !x || !y) {
         fprintf(stderr, "Erro: parâmetros inválidos em getPontoEndQuadra\n");
@@ -323,6 +260,13 @@ void setEspBQuadra(Quadra q, double novaEspessura) {
     QuadraStruct* quad = (QuadraStruct*)q;
     quad->espBorda = novaEspessura;
 }
+
+
+
+
+
+
+
 
 size_t tamSerialQuadra(void) {
     return sizeof(QuadraStruct);
