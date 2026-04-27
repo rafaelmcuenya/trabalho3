@@ -262,11 +262,19 @@ void setEspBQuadra(Quadra q, double novaEspessura) {
 }
 
 
+/*
+  Criar uma função calculaPosiçãoEndereco
+  Pega CEP, Face, Número e posição da âncora (x,y)
+  Faz um switch case para cada Face
 
+  Altura = alt
+  Largura = lar
 
-
-
-
+  Norte = x + num, y + alt
+  Sul = x + num, y
+  Leste = x, y + num
+  Oeste = x + lar, y + num
+*/
 
 size_t tamSerialQuadra(void) {
     return sizeof(QuadraStruct);
