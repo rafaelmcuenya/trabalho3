@@ -66,31 +66,8 @@ double getEspBQuadra(Quadra q);
 /*
 Retorna a espessura da borda da quadra repassada pelo parâmetro.
 */
-
-double getXSVGQuadra(Quadra q);
 /*
-Retorna a coordenada X do canto superior esquerdo para desenho SVG da quadra repassada pelo parâmetro.
-*/
-
-double getYSVGQuadra(Quadra q);
-/*
-Retorna a coordenada Y do canto superior esquerdo para desenho SVG da quadra repassada pelo parâmetro.
-*/
-
-double getXFaceQuadra(Quadra q, char face);
-/*
-Calcula a coordenada X da âncora de uma face específica.
-Primeiro parâmetro é o ponteiro para a quadra.
-Segundo parâmetro é a face desejada.
-Retorna a coordenada X, ou -1 em caso de face inválida.
-*/
-
-double getYFaceQuadra(Quadra q, char face);
-/*
-Calcula a coordenada Y da âncora de uma face específica.
-Primeiro parâmetro é o ponteiro para a quadra.
-Segundo parâmetro é a face desejada.
-Retorna a coordenada Y, ou -1 em caso de face inválida.
+Fazer a função calculaPoscicaoEndereco
 */
 
 void getPontoEndQuadra(Quadra q, char face, double num, double *x, double *y);
