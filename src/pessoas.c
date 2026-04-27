@@ -28,7 +28,6 @@ int validaCpf(const char *cpf) {
     for (int i = 0; i < 11; i++) {
         if (!isdigit(cpf[i])) return 0;
     }
-    
     return 1;
 }
 
@@ -38,11 +37,9 @@ int validaSexo(char sexo) {
 
 int validaData(const char *data) {
     if (!data) return 0;
-    
     if (strlen(data) != 10) return 0;
-    
     if (data[2] != '/' || data[5] != '/') return 0;
-    
+
     for (int i = 0; i < 10; i++) {
         if (i == 2 || i == 5) continue;
         if (!isdigit(data[i])) return 0;
@@ -51,17 +48,14 @@ int validaData(const char *data) {
     int dia = (data[0] - '0') * 10 + (data[1] - '0');
     int mes = (data[3] - '0') * 10 + (data[4] - '0');
     int ano = (data[6] - '0') * 1000 + (data[7] - '0') * 100 + (data[8] - '0') * 10 + (data[9] - '0');
-    
     if (mes < 1 || mes > 12) return 0;
     
     int diasPorMes[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    
     if (ano % 4 == 0 && (ano % 100 != 0 || ano % 400 == 0)) {
-        diasPorMes[1] = 29;
+        diasPorMes[1] = 29;   //Ano bixesto
     }
     
     if (dia < 1 || dia > diasPorMes[mes - 1]) return 0;
-    
     return 1;
 }
 
@@ -99,7 +93,6 @@ int calculaIdade(const char *nascimento, const char *dataReferencia) {
     int diaRef = (dataReferencia[0] - '0') * 10 + (dataReferencia[1] - '0');
     
     int idade = anoRef - anoNasc;
-    
     if (mesRef < mesNasc || (mesRef == mesNasc && diaRef < diaNasc)) {
         idade--;
     }
@@ -154,7 +147,6 @@ Habitante criaHabitante(const char *cpf, const char *nome, const char *sobrenome
     h->nascimento[DATA_LEN - 1] = '\0';
     
     h->idMoradia[0] = '\0';
-    
     return (Habitante)h;
 }
 
@@ -281,7 +273,6 @@ Habitante desserialHabitante(void *buffer, size_t tamBuffer) {
         fprintf(stderr, "Erro: falha na alocação em desserialHabitante\n");
         return NULL;
     }
-    
     memcpy(h, buffer, sizeof(HabitanteStruct));
     return (Habitante)h;
 }
