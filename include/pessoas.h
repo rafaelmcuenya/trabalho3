@@ -72,7 +72,8 @@ void setIdMoradiaHabitante(Habitante h, const char *idMoradia);
 /*
 Define o identificador da moradia onde o habitante reside.
 Primeiro parâmetro é o ponteiro para o habitante.
-Segundo parâmetro é o identificador da moradia (pode ser NULL para tornar sem-teto).
+Segundo parâmetro é o identificador da moradia.
+Pode ser usada para transformar um morador em um sem-teto caso o 2° parâmetro for NULL.
 */
 
 int validaCpf(const char *cpf);
@@ -86,7 +87,7 @@ int validaSexo(char sexo);
 /*
 Verifica se um caractere representa um sexo válido.
 Primeiro parâmetro é o caractere a ser validado.
-Retorna 1 se válido ('M', 'm', 'F', 'f'), 0 caso contrário.
+Retorna 1 se válido ('M', 'm', 'F' ou 'f', 0 caso contrário.
 */
 
 int validaData(const char *data);
@@ -104,9 +105,9 @@ Retorna -1 se data1 < data2, 0 se iguais, 1 se data1 > data2.
 
 int calculaIdade(const char *nascimento, const char *dataReferencia);
 /*
-Calcula a idade com base na data de nascimento e uma data de referência.
-Primeiro parâmetro é a data de nascimento ("dd/mm/aaaa").
-Segundo parâmetro é a data de referência ("dd/mm/aaaa").
+Calcula a idade de um habitante com base na data de nascimento e uma data de referência.
+Primeiro parâmetro é a data de nascimento.
+Segundo parâmetro é a data de referência.
 Retorna a idade em anos, ou -1 em caso de erro.
 */
 
