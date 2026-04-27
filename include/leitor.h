@@ -19,7 +19,7 @@ void finalizarSistema(void);
    Libera toda a memória alocada pelo sistema e finaliza todos os componentes. Deve ser chamado ao término da execução.
 */
 
-//Fazer funções aqui posteriormente
+//Fazer funções aqui posteriormente caso necessário
 
 void abrirArquivo(FILE **f, const char *caminho);
 /*
