@@ -41,7 +41,6 @@ int validaCor(char *cor) {
     
     const char* corLimpa = (cor[0] == '#') ? cor + 1 : cor;
     int len = strlen(corLimpa);
-    
     if (len != 6) return 0;
     
     for (int i = 0; i < 6; i++) {
@@ -52,8 +51,7 @@ int validaCor(char *cor) {
 }
 
 int validaFace(char face) {
-    return (face == 'N' || face == 'n' || face == 'S' || face == 's' || 
-            face == 'L' || face == 'l' || face == 'O' || face == 'o');
+    return (face == 'N' || face == 'n' || face == 'S' || face == 's' || face == 'L' || face == 'l' || face == 'O' || face == 'o');
 }
 
 static char normalizaFace(char face) {
@@ -102,7 +100,6 @@ Quadra criaQuadra(char *cep, double x, double y, double l, double h, char *corB,
   
     preencherCor(q->corB, corB, "000000");
     preencherCor(q->corP, corP, "FFFFFF");
-    
     return (Quadra)q;
 }
 
@@ -218,11 +215,12 @@ double getXFaceQuadra(Quadra q, char face) {
     }
     QuadraStruct* quad = (QuadraStruct*)q;
     char f = normalizaFace(face);
-    
+    /*
     switch (f) {
         case 'N':
+            return quad->x + quad->largura
         case 'S':
-            return quad->x - quad->largura / 2.0;
+            return quad->x + quad->largura
         case 'L':
             return quad->x;
         case 'O':
@@ -231,6 +229,9 @@ double getXFaceQuadra(Quadra q, char face) {
             return -1.0;
     }
 }
+
+Revisar isso dps
+*/
 
 double getYFaceQuadra(Quadra q, char face) {
     if (!q || !validaFace(face)) {
