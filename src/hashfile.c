@@ -83,6 +83,7 @@ static int saveCabecalho(HashFile *hf) {
     fwrite(&hf->tamDiretorio, sizeof(sizeT), 1, hf->arqCabecalho);
     fwrite(&hf->offset_proximo_bucket, sizeof(long), 1, hf->arqCabecalho);
     fwrite(&hf->num_buckets, sizeof(int), 1, hf->arqCabecalho);
+    fwrite(hf->offsets_buckets, sizeof(long), hf->num_buckets, hf->arqCabecalho);
     fflush(hf->arqCabecalho);
     return 1;
 }
@@ -118,7 +119,6 @@ static int adicionarOffsetBucket(HashFile *hf, long offset) {
 
 static int saveBucket(HashFile *hf, Bucket *b) {
     if (!b->modificado) return 1;
-    
     if (b->offset_arquivo == -1) {
         b->offset_arquivo = hf->offset_proximo_bucket;
         hf->offset_proximo_bucket += sizeof(int) * 2 + (hf->tamBucket * sizeof(RegistroBucket));
@@ -201,7 +201,7 @@ static int splitBucket(HashFile *hf, int indice) {
     
     int newProf = oldB->profLocal + 1;
     
-    if (newProf > hf->profGlobal) {
+    while (newProf > hf->profGlobal) {
         if (!dobraDiretorio(hf)) return 0;
     }
     
@@ -336,7 +336,6 @@ HashFile* criarHF(const char *nomeBase, int tamBucket, int profInicial) {
     
     hf->modificado = 1;
     saveCabecalho(hf);
-    
     return hf;
 }
 
@@ -386,8 +385,10 @@ HashFile* abrirHF(const char *nomeBase) {
         return NULL;
     }
     
-    fseek(hf->arqCabecalho, sizeof(int) * 2 + sizeof(sizeT) + sizeof(long), SEEK_SET);
-    fread(hf->offsets_buckets, sizeof(long), hf->num_buckets, hf->arqCabecalho);
+    if (hf->num_buckets > 0) {
+        fseek(hf->arqCabecalho, sizeof(int) * 2 + sizeof(sizeT) + sizeof(long) + sizeof(int), SEEK_SET);
+        fread(hf->offsets_buckets, sizeof(long), hf->num_buckets, hf->arqCabecalho);
+    }
     
     hf->diretorio = (Bucket**)malloc(hf->tamDiretorio * sizeof(Bucket*));
     if (!hf->diretorio) {
@@ -415,17 +416,30 @@ HashFile* abrirHF(const char *nomeBase) {
     }
     
     for (sizeT i = 0; i < hf->tamDiretorio; i++) {
-        int idx_bucket = getBitsHash((uint32_t)i, hf->profGlobal);
-        if (idx_bucket < hf->num_buckets) {
-            hf->diretorio[i] = buckets_carregados[idx_bucket];
-        } else {
+        int encontrado = 0;
+        for (int j = 0; j < hf->num_buckets; j++) {
+            if (buckets_carregados[j] && buckets_carregados[j]->numRegistros > 0) {
+                for (int k = 0; k < buckets_carregados[j]->numRegistros; k++) {
+                    if (buckets_carregados[j]->registros[k].ocupado) {
+                        uint32_t h = hashString(buckets_carregados[j]->registros[k].chave);
+                        int idx_registro = getBitsHash(h, hf->profGlobal);
+                        if (idx_registro == (int)i) {
+                            hf->diretorio[i] = buckets_carregados[j];
+                            encontrado = 1;
+                            break;
+                        }
+                    }
+                }
+                if (encontrado) break;
+            }
+        }
+        if (!encontrado) {
             hf->diretorio[i] = buckets_carregados[0];
         }
     }
     
     free(buckets_carregados);
     hf->modificado = 0;
-    
     return hf;
 }
 
@@ -448,7 +462,7 @@ void freeHF(HashFile *hf) {
                     }
                     if (!ja_liberado) {
                         saveBucket(hf, hf->diretorio[i]);
-                        buckels_liberados[num_liberados++] = hf->diretorio[i];
+                        buckets_liberados[num_liberados++] = hf->diretorio[i];
                     }
                 }
             }
@@ -463,7 +477,7 @@ void freeHF(HashFile *hf) {
     
     if (hf->modificado) {
         if (hf->arqCabecalho) {
-            fseek(hf->arqCabecalho, sizeof(int) * 2 + sizeof(sizeT) + sizeof(long), SEEK_SET);
+            fseek(hf->arqCabecalho, sizeof(int) * 2 + sizeof(sizeT) + sizeof(long) + sizeof(int), SEEK_SET);
             fwrite(hf->offsets_buckets, sizeof(long), hf->num_buckets, hf->arqCabecalho);
         }
         saveCabecalho(hf);
@@ -473,7 +487,6 @@ void freeHF(HashFile *hf) {
     if (hf->arqBuckets) fclose(hf->arqBuckets);
     if (hf->arqDados) fclose(hf->arqDados);
     if (hf->arqCabecalho) fclose(hf->arqCabecalho);
-    
     free(hf);
 }
 
@@ -518,7 +531,6 @@ int insertHF(HashFile *hf, const char *chave, const void *dado, sizeT tamDado) {
     b->modificado = 1;
     hf->modificado = 1;
     saveBucket(hf, b);
-    
     return 1;
 }
 
@@ -543,7 +555,6 @@ int buscaHF(HashFile *hf, const char *chave, void *dadoSaida, sizeT *tamSaida) {
         fread(dadoSaida, 1, b->registros[pos].tamDados, hf->arqDados);
         *tamSaida = b->registros[pos].tamDados;
     }
-    
     return 1;
 }
 
@@ -560,19 +571,43 @@ int deletarItemHF(HashFile *hf, const char *chave) {
     if (pos == -1) return 0;
     
     b->registros[pos].ocupado = 0;
+    
+    if (pos < b->numRegistros - 1 && b->registros[b->numRegistros - 1].ocupado) {
+        memcpy(&b->registros[pos], &b->registros[b->numRegistros - 1], sizeof(RegistroBucket));
+        b->registros[b->numRegistros - 1].ocupado = 0;
+    }
+    
+    if (b->numRegistros > 0) {
+        b->numRegistros--;
+    }
+    
     b->modificado = 1;
     hf->modificado = 1;
     saveBucket(hf, b);
-    
     return 1;
 }
 
 int refreshHF(HashFile *hf, const char *chave, const void *novoDado, sizeT tamDado) {
     if (!hf || !chave || !novoDado || tamDado == 0) return -1;
     
-    if (deletarItemHF(hf, chave) != 1) return 0;
+    uint32_t h = hashString(chave);
+    int indice = getBitsHash(h, hf->profGlobal);
     
-    return insertHF(hf, chave, novoDado, tamDado);
+    Bucket *b = hf->diretorio[indice];
+    if (!b) return -1;
+    
+    int pos = searchRegistro(b, chave);
+    if (pos == -1) return 0;
+    
+    fseek(hf->arqDados, b->registros[pos].offset_dados, SEEK_SET);
+    fwrite(novoDado, 1, tamDado, hf->arqDados);
+    fflush(hf->arqDados);
+    
+    b->registros[pos].tamDados = tamDado;
+    b->modificado = 1;
+    hf->modificado = 1;
+    saveBucket(hf, b);
+    return 1;
 }
 
 int gerarDumpHF(HashFile *hf) {
@@ -611,7 +646,7 @@ int gerarDumpHF(HashFile *hf) {
         }
         
         if (!ja_impresso) {
-            buckels_impressos[num_impressos++] = b;
+            buckets_impressos[num_impressos++] = b;
             fprintf(dump, "Bucket (profLocal=%d, registros=%d, offset=%ld):\n", 
                     b->profLocal, b->numRegistros, b->offset_arquivo);
             
@@ -657,7 +692,7 @@ sizeT totalRegistrosHF(const HashFile *hf) {
         }
         
         if (!ja_contado && b) {
-            buckels_contados[num_contados++] = b;
+            buckets_contados[num_contados++] = b;
             for (int j = 0; j < b->numRegistros; j++) {
                 if (b->registros[j].ocupado) {
                     total++;
@@ -665,7 +700,6 @@ sizeT totalRegistrosHF(const HashFile *hf) {
             }
         }
     }
-    
     free(buckets_contados);
     return total;
 }
@@ -688,7 +722,6 @@ int getInfoBucketHF(const HashFile *hf, int indiceBucket, int *qtdRegistros, int
     
     if (qtdRegistros) *qtdRegistros = b->numRegistros;
     if (profLocal) *profLocal = b->profLocal;
-    
     return 1;
 }
 
@@ -712,10 +745,9 @@ int iterarHF(HashFile *hf, hf_Callback callback, void *contexto) {
                 ja_processado = 1;
                 break;
             }
-        }
-        
+        }   
         if (!ja_processado && b) {
-            buckels_processados[num_processados++] = b;
+            buckets_processados[num_processados++] = b;
             
             for (int j = 0; j < b->numRegistros; j++) {
                 if (b->registros[j].ocupado) {
@@ -729,7 +761,6 @@ int iterarHF(HashFile *hf, hf_Callback callback, void *contexto) {
                         buffer = new_buffer;
                         buffer_tam = b->registros[j].tamDados;
                     }
-                    
                     fseek(hf->arqDados, b->registros[j].offset_dados, SEEK_SET);
                     fread(buffer, 1, b->registros[j].tamDados, hf->arqDados);
                     callback(b->registros[j].chave, buffer, b->registros[j].tamDados, contexto);
@@ -738,7 +769,6 @@ int iterarHF(HashFile *hf, hf_Callback callback, void *contexto) {
             }
         }
     }
-    
     free(buffer);
     free(buckets_processados);
     return processados;
