@@ -14,7 +14,7 @@
 
 typedef void* Habitante;
 
-Habitante criaHabitante(const char *cpf, const char *nome, const char *sobrenome, char sexo, const char *nascimento);
+Habitante criaHabitante(const char *cpf, const char *nome, const char *sobrenome, char sexo, const char *nasc);
 /*
 Cria um habitante com os dados repassados pelos parâmetros.
 Primeiro parâmetro é o CPF, contendo exatamente 11 dígitos numéricos.
@@ -51,7 +51,7 @@ char getSexoHabitante(Habitante h);
 Retorna o sexo do habitante repassado pelo parâmetro.
 */
 
-const char* getNascimentoHabitante(Habitante h);
+const char* getNascHabitante(Habitante h);
 /*
 Retorna a data de nascimento do habitante repassado pelo parâmetro.
 */
@@ -103,7 +103,7 @@ Compara duas datas no formato "dd/mm/aaaa".
 Retorna -1 se data1 < data2, 0 se iguais, 1 se data1 > data2.
 */
 
-int calculaIdade(const char *nascimento, const char *dataReferencia);
+int calculaIdade(const char *nasc, const char *dataReferencia);
 /*
 Calcula a idade de um habitante com base na data de nascimento e uma data de referência.
 Primeiro parâmetro é a data de nascimento.
