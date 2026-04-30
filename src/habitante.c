@@ -15,7 +15,7 @@ typedef struct {
     char nome[NOME_LEN];
     char sobrenome[SOBRENOME_LEN];
     char sexo;
-    char nascimento[DATA_LEN];
+    char nasc[DATA_LEN];
     char idMoradia[ID_MORADIA_LEN];
 } HabitanteStruct;
 
@@ -80,13 +80,13 @@ int comparaData(const char *data1, const char *data2) {
     return 0;
 }
 
-int calculaIdade(const char *nascimento, const char *dataReferencia) {
-    if (!nascimento || !dataReferencia) return -1;
-    if (!validaData(nascimento) || !validaData(dataReferencia)) return -1;
+int calculaIdade(const char *nasc, const char *dataReferencia) {
+    if (!nasc || !dataReferencia) return -1;
+    if (!validaData(nasc) || !validaData(dataReferencia)) return -1;
     
-    int anoNasc = (nascimento[6] - '0') * 1000 + (nascimento[7] - '0') * 100 + (nascimento[8] - '0') * 10 + (nascimento[9] - '0');
-    int mesNasc = (nascimento[3] - '0') * 10 + (nascimento[4] - '0');
-    int diaNasc = (nascimento[0] - '0') * 10 + (nascimento[1] - '0');
+    int anoNasc = (nasc[6] - '0') * 1000 + (nasc[7] - '0') * 100 + (nasc[8] - '0') * 10 + (nasc[9] - '0');
+    int mesNasc = (nasc[3] - '0') * 10 + (nasc[4] - '0');
+    int diaNasc = (nasc[0] - '0') * 10 + (nasc[1] - '0');
     
     int anoRef = (dataReferencia[6] - '0') * 1000 + (dataReferencia[7] - '0') * 100 + (dataReferencia[8] - '0') * 10 + (dataReferencia[9] - '0');
     int mesRef = (dataReferencia[3] - '0') * 10 + (dataReferencia[4] - '0');
@@ -100,7 +100,7 @@ int calculaIdade(const char *nascimento, const char *dataReferencia) {
     return idade;
 }
 
-Habitante criaHabitante(const char *cpf, const char *nome, const char *sobrenome, char sexo, const char *nascimento) {
+Habitante criaHabitante(const char *cpf, const char *nome, const char *sobrenome, char sexo, const char *nasc) {
     if (!cpf || !validaCpf(cpf)) {
         fprintf(stderr, "Erro: CPF inválido\n");
         return NULL;
@@ -121,8 +121,8 @@ Habitante criaHabitante(const char *cpf, const char *nome, const char *sobrenome
         return NULL;
     }
     
-    if (!nascimento || !validaData(nascimento)) {
-        fprintf(stderr, "Erro: data de nascimento inválida\n");
+    if (!nasc || !validaData(nasc)) {
+        fprintf(stderr, "Erro: data de nasc inválida\n");
         return NULL;
     }
     
@@ -143,8 +143,8 @@ Habitante criaHabitante(const char *cpf, const char *nome, const char *sobrenome
     
     h->sexo = (sexo == 'm') ? 'M' : (sexo == 'f') ? 'F' : sexo;
     
-    strncpy(h->nascimento, nascimento, DATA_LEN - 1);
-    h->nascimento[DATA_LEN - 1] = '\0';
+    strncpy(h->nasc, nasc, DATA_LEN - 1);
+    h->nasc[DATA_LEN - 1] = '\0';
     
     h->idMoradia[0] = '\0';
     return (Habitante)h;
@@ -204,13 +204,13 @@ char getSexoHabitante(Habitante h) {
     return hab->sexo;
 }
 
-const char* getNascimentoHabitante(Habitante h) {
+const char* getNascHabitante(Habitante h) {
     if (!h) {
-        fprintf(stderr, "Erro: habitante NULL em getNascimentoHabitante\n");
+        fprintf(stderr, "Erro: habitante NULL em getnascHabitante\n");
         return NULL;
     }
     HabitanteStruct *hab = (HabitanteStruct*)h;
-    return hab->nascimento;
+    return hab->nasc;
 }
 
 const char* getIdMoradiaHabitante(Habitante h) {
