@@ -88,7 +88,7 @@ static void cmdQ(const char *cep, double x, double y, double w, double h,
     freeQuadra(q);
 }
 
-static void cmdCqsw(double sw, const char *cfill, const char *cstrk) {
+static void cmdCq(double sw, const char *cfill, const char *cstrk) {
     espessuraBorda = sw;
     strncpy(corPreenchimento, cfill, 31);
     corPreenchimento[31] = '\0';
@@ -588,11 +588,11 @@ static void processarComandoGeo(const char *linha) {
             cmdQ(cep, x, y, w, h, corPreenchimento, corBorda, espessuraBorda);
         }
     }
-    else if (strcmp(comando, "cqsw") == 0) {
+    else if (strcmp(comando, "cq") == 0) {
         double sw;
         char cfill[32], cstrk[32];
         if (sscanf(linha, "%*s %lf %s %s", &sw, cfill, cstrk) == 3) {
-            cmdCqsw(sw, cfill, cstrk);
+            cmdCq(sw, cfill, cstrk);
         }
     }
 }
