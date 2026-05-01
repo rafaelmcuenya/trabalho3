@@ -7,7 +7,7 @@
 #define COMPL_LEN 64
 
 typedef struct {
-    HabitanteStruct habitante;
+    Habitante habitante;
     char cep[CEP_LEN];
     char face;
     int numero;
@@ -50,9 +50,8 @@ Morador criaMorador(const char *cpf, const char *nome, const char *sobrenome, ch
         freeHabitante(h);
         return NULL;
     }
-    memcpy(&m->habitante, h, sizeof(HabitanteStruct));
-    freeHabitante(h);
-   
+    
+    m->habitante = h;
     strncpy(m->cep, cep, CEP_LEN - 1);
     m->cep[CEP_LEN - 1] = '\0';
     m->face = (face == 'n') ? 'N' : (face == 's') ? 'S' : (face == 'l') ? 'L' : (face == 'o') ? 'O' : face;
@@ -73,7 +72,7 @@ const char* getCpfMorador(Morador m) {
         return NULL;
     }
     MoradorStruct *mor = (MoradorStruct*)m;
-    return mor->habitante.cpf;
+    return getCpfHabitante(mor->habitante);
 }
 
 const char* getNomeMorador(Morador m) {
@@ -82,7 +81,7 @@ const char* getNomeMorador(Morador m) {
         return NULL;
     }
     MoradorStruct *mor = (MoradorStruct*)m;
-    return mor->habitante.nome;
+    return getNomeHabitante(mor->habitante);
 }
 
 const char* getSobrenomeMorador(Morador m) {
@@ -91,7 +90,7 @@ const char* getSobrenomeMorador(Morador m) {
         return NULL;
     }
     MoradorStruct *mor = (MoradorStruct*)m;
-    return mor->habitante.sobrenome;
+    return getSobrenomeHabitante(mor->habitante);
 }
 
 const char* getNomeCompletoMorador(Morador m) {
@@ -100,15 +99,7 @@ const char* getNomeCompletoMorador(Morador m) {
         return NULL;
     }
     MoradorStruct *mor = (MoradorStruct*)m;
-    
-    size_t len = strlen(mor->habitante.nome) + strlen(mor->habitante.sobrenome) + 2;
-    char *completo = (char*)malloc(len);
-    if (!completo) {
-        fprintf(stderr, "Erro: falha na alocação do nome completo\n");
-        return NULL;
-    }
-    snprintf(completo, len, "%s %s", mor->habitante.nome, mor->habitante.sobrenome);
-    return completo;
+    return getNomeCompletoHabitante(mor->habitante);
 }
 
 char getSexoMorador(Morador m) {
@@ -117,7 +108,7 @@ char getSexoMorador(Morador m) {
         return '\0';
     }
     MoradorStruct *mor = (MoradorStruct*)m;
-    return mor->habitante.sexo;
+    return getSexoHabitante(mor->habitante);
 }
 
 const char* getNascMorador(Morador m) {
@@ -126,7 +117,7 @@ const char* getNascMorador(Morador m) {
         return NULL;
     }
     MoradorStruct *mor = (MoradorStruct*)m;
-    return mor->habitante.nascimento;
+    return getNascimentoHabitante(mor->habitante);
 }
 
 const char* getCepMorador(Morador m) {
@@ -188,7 +179,7 @@ const char* getEnderecoCompletoMorador(Morador m) {
         snprintf(endereco, len, "%s/%c/%d/%s", mor->cep, mor->face, mor->numero, mor->compl);
     } else {
         snprintf(endereco, len, "%s/%c/%d", mor->cep, mor->face, mor->numero);
-    } 
+    }
     return endereco;
 }
 
@@ -198,36 +189,84 @@ Habitante getHabitanteMorador(Morador m) {
         return NULL;
     }
     MoradorStruct *mor = (MoradorStruct*)m;
-    return (Habitante)&mor->habitante;
+    return mor->habitante;
 }
 
 size_t tamSerialMorador(void) {
-    return sizeof(MoradorStruct);
+    size_t tamHabitante = tamSerialHabitante();
+    return tamHabitante + CEP_LEN + sizeof(char) + sizeof(int) + COMPL_LEN;
 }
 
 int serialMorador(Morador m, void *buffer, size_t tamBuffer) {
-    if (!m || !buffer || tamBuffer < sizeof(MoradorStruct)) {
+    if (!m || !buffer) {
         fprintf(stderr, "Erro: parâmetros inválidos em serialMorador\n");
         return 0;
     }
     
+    size_t tamNecessario = tamSerialMorador();
+    if (tamBuffer < tamNecessario) {
+        fprintf(stderr, "Erro: buffer insuficiente em serialMorador\n");
+        return 0;
+    }
+    
     MoradorStruct *mor = (MoradorStruct*)m;
-    memcpy(buffer, mor, sizeof(MoradorStruct));
+    char *ptr = (char*)buffer;
+    
+    size_t tamHab = tamSerialHabitante();
+    if (!serialHabitante(mor->habitante, ptr, tamHab)) {
+        return 0;
+    }
+    ptr += tamHab;
+    
+    memcpy(ptr, mor->cep, CEP_LEN);
+    ptr += CEP_LEN;
+    memcpy(ptr, &mor->face, sizeof(char));
+    ptr += sizeof(char);
+    memcpy(ptr, &mor->numero, sizeof(int));
+    ptr += sizeof(int);
+    memcpy(ptr, mor->compl, COMPL_LEN);
     return 1;
 }
 
 Morador desserialMorador(void *buffer, size_t tamBuffer) {
-    if (!buffer || tamBuffer < sizeof(MoradorStruct)) {
+    if (!buffer) {
         fprintf(stderr, "Erro: parâmetros inválidos em desserialMorador\n");
         return NULL;
     }
     
+    size_t tamHab = tamSerialHabitante();
+    if (tamBuffer < tamHab + CEP_LEN + sizeof(char) + sizeof(int) + COMPL_LEN) {
+        fprintf(stderr, "Erro: buffer insuficiente em desserialMorador\n");
+        return NULL;
+    }
+    
+    char *ptr = (char*)buffer;
+    
+    Habitante h = desserialHabitante(ptr, tamHab);
+    if (!h) {
+        return NULL;
+    }
+    ptr += tamHab;
+    
     MoradorStruct *m = (MoradorStruct*)malloc(sizeof(MoradorStruct));
     if (!m) {
         fprintf(stderr, "Erro: falha na alocação em desserialMorador\n");
+        freeHabitante(h);
         return NULL;
     }
-    memcpy(m, buffer, sizeof(MoradorStruct));
+    
+    m->habitante = h;
+    
+    memcpy(m->cep, ptr, CEP_LEN);
+    m->cep[CEP_LEN - 1] = '\0';
+    ptr += CEP_LEN;
+    memcpy(&m->face, ptr, sizeof(char));
+    ptr += sizeof(char);
+    memcpy(&m->numero, ptr, sizeof(int));
+    ptr += sizeof(int);
+    memcpy(m->compl, ptr, COMPL_LEN);
+    m->compl[COMPL_LEN - 1] = '\0';
+    
     return (Morador)m;
 }
 
@@ -237,5 +276,6 @@ void freeMorador(Morador m) {
         return;
     }
     MoradorStruct *mor = (MoradorStruct*)m;
+    freeHabitante(mor->habitante);
     free(mor);
 }
