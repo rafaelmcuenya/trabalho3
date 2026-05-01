@@ -9,31 +9,33 @@
    Ele coordena as operações evolvendo as quadras, pessoas, moradores, entre outros.
 */
 
-void inicializarSistema(void);
+void inicializarSistema(const char *nomeBase, const char *outputDir);
 /*
-   Inicializa todos os componentes do sistema. Deve ser chamado antes de processar qualquer um dos arquivos.
+   Inicializa todos os componentes do sistema. Deve ser chamado antes de processar qualquer arquivo.
+   Primeiro parâmetro é o nome base para os hashfiles.
+   Segundo parâmetro é o diretório de saída.
 */
 
 void finalizarSistema(void);
 /*
-   Libera toda a memória alocada pelo sistema e finaliza todos os componentes. Deve ser chamado ao término da execução.
+   Libera toda a memória alocada, fecha hashfiles e finaliza o sistema.
+   Deve ser chamado ao término da execução.
 */
 
-//Fazer funções aqui posteriormente caso necessário
-
-void abrirArquivo(FILE **f, const char *caminho);
+void processarArquivoGeo(const char *caminho, const char *inputDir, const char *nomeBase, const char *outputDir);
 /*
-   Abre um arquivo para leitura, tratando erros de abertura durante o processo.
+   Processa o arquivo .geo, gerando o SVG inicial da cidade.
 */
 
-void processarComando(const char* linha, int ehQry, const char* nomeBase, const char* outputDir);
+void processarArquivoPm(const char *caminho, const char *inputDir, const char *nomeBase);
 /*
-   Processa uma linha de comando individual de um arquivo de entrada.
+   Processa o arquivo .pm, cadastrando habitantes e moradores nos hashfiles.
 */
 
-void processarArquivo(const char* caminho, const char* inputDir, int ehQry, const char* nomeBase, const char* outputDir);
+void processarArquivoQry(const char *caminho, const char *inputDir, const char *nomeBase, const char *outputDir);
 /*
-   Processa um arquivo completo de comandos de entrada.
+   Processa o arquivo .qry, gerando o SVG final e TXT com resultados das consultas.
 */
+
 
 #endif
