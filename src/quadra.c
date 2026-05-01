@@ -4,7 +4,6 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
-#include "morador.h"
 
 typedef struct {
     char cep[32];
@@ -15,11 +14,11 @@ typedef struct {
     double espBorda;
 } QuadraStruct;
 
-static void preencherCor(char* dest, const char* fonte, const char* corPadrao) {
+static void preencherCor(char *dest, const char *fonte, const char *corPadrao) {
     if (fonte && strlen(fonte) > 0) {
-        const char* cor = (fonte[0] == '#') ? fonte + 1 : fonte;
+        const char *cor = (fonte[0] == '#') ? fonte + 1 : fonte;
         int len = strlen(cor);
-        
+
         if (len == 6) {
             strncpy(dest, cor, 6);
         } else if (len < 6) {
@@ -37,60 +36,83 @@ static void preencherCor(char* dest, const char* fonte, const char* corPadrao) {
     }
 }
 
-int validaCor(char *cor) {
+int validaCor(const char *cor) {
     if (!cor || strlen(cor) == 0) return 0;
-    
-    const char* corLimpa = (cor[0] == '#') ? cor + 1 : cor;
+
+    const char *corLimpa = (cor[0] == '#') ? cor + 1 : cor;
     int len = strlen(corLimpa);
     if (len != 6) return 0;
-    
+
     for (int i = 0; i < 6; i++) {
         if (!isxdigit(corLimpa[i])) return 0;
     }
-    
+
     return 1;
 }
 
 int validaFace(char face) {
-    return (face == 'N' || face == 'n' || face == 'S' || face == 's' || face == 'L' || face == 'l' || face == 'O' || face == 'o');
+    return (face == 'N' || face == 'n' || face == 'S' || face == 's' ||
+            face == 'L' || face == 'l' || face == 'O' || face == 'o');
 }
 
 static char normalizaFace(char face) {
     return toupper(face);
 }
 
-Quadra criaQuadra(char *cep, double x, double y, double l, double h, char *corB, char *corP, double espB) {
+static double getXFaceQuadra(const QuadraStruct *quad, char face) {
+    switch (face) {
+        case 'N': return quad->x;
+        case 'S': return quad->x;
+        case 'L': return quad->x;
+        case 'O': return quad->x - quad->largura;
+        default:  return 0;
+    }
+}
+
+static double getYFaceQuadra(const QuadraStruct *quad, char face) {
+    switch (face) {
+        case 'N': return quad->y - quad->altura;
+        case 'S': return quad->y;
+        case 'L': return quad->y;
+        case 'O': return quad->y;
+        default:  return 0;
+    }
+}
+
+Quadra criaQuadra(const char *cep, double x, double y, double l, double h,
+                  const char *corB, const char *corP, double espB) {
     if (!cep || strlen(cep) == 0) {
         fprintf(stderr, "Erro: CEP inválido\n");
         return NULL;
     }
-    
+
     if (!corB || !corP) {
         fprintf(stderr, "Erro: cores inválidas\n");
         return NULL;
     }
-    
+
     if (l <= 0 || h <= 0) {
         fprintf(stderr, "Erro: largura e/ou altura inválida(s)\n");
         return NULL;
     }
-    
+
     if (espB <= 0) {
         fprintf(stderr, "Erro: espessura da borda inválida\n");
         return NULL;
     }
-    
-    if (x != x || y != y || isinf(x) || isinf(y) || l != l || h != h || isinf(l) || isinf(h) || isinf(espB)) {
+
+    if (isnan(x) || isnan(y) || isnan(l) || isnan(h) || isnan(espB) ||
+        isinf(x) || isinf(y) || isinf(l) || isinf(h) || isinf(espB)) {
         fprintf(stderr, "Erro: coordenadas e/ou dimensões inválida(s)\n");
         return NULL;
     }
-    
-    QuadraStruct* q = (QuadraStruct*)malloc(sizeof(QuadraStruct));
+
+    QuadraStruct *q = (QuadraStruct*)malloc(sizeof(QuadraStruct));
     if (!q) {
         fprintf(stderr, "Erro: falha na alocação da quadra\n");
         return NULL;
     }
-    
+
     strncpy(q->cep, cep, 31);
     q->cep[31] = '\0';
     q->x = x;
@@ -98,24 +120,19 @@ Quadra criaQuadra(char *cep, double x, double y, double l, double h, char *corB,
     q->largura = l;
     q->altura = h;
     q->espBorda = espB;
-  
+
     preencherCor(q->corB, corB, "000000");
     preencherCor(q->corP, corP, "FFFFFF");
     return (Quadra)q;
 }
 
-char* getCepQuadra(Quadra q) {
+const char* getCepQuadra(Quadra q) {
     if (!q) {
         fprintf(stderr, "Erro: quadra NULL em getCepQuadra\n");
         return NULL;
     }
-    
-    QuadraStruct* quad = (QuadraStruct*)q;
-    char* cep = (char*)malloc(strlen(quad->cep) + 1);
-    if (cep) {
-        strcpy(cep, quad->cep);
-    }
-    return cep;
+    QuadraStruct *quad = (QuadraStruct*)q;
+    return quad->cep;
 }
 
 double getXQuadra(Quadra q) {
@@ -123,7 +140,7 @@ double getXQuadra(Quadra q) {
         fprintf(stderr, "Erro: quadra NULL em getXQuadra\n");
         return -1000.0;
     }
-    QuadraStruct* quad = (QuadraStruct*)q;
+    QuadraStruct *quad = (QuadraStruct*)q;
     return quad->x;
 }
 
@@ -132,7 +149,7 @@ double getYQuadra(Quadra q) {
         fprintf(stderr, "Erro: quadra NULL em getYQuadra\n");
         return -1000.0;
     }
-    QuadraStruct* quad = (QuadraStruct*)q;
+    QuadraStruct *quad = (QuadraStruct*)q;
     return quad->y;
 }
 
@@ -141,7 +158,7 @@ double getLQuadra(Quadra q) {
         fprintf(stderr, "Erro: quadra NULL em getLQuadra\n");
         return -1.0;
     }
-    QuadraStruct* quad = (QuadraStruct*)q;
+    QuadraStruct *quad = (QuadraStruct*)q;
     return quad->largura;
 }
 
@@ -150,36 +167,26 @@ double getHQuadra(Quadra q) {
         fprintf(stderr, "Erro: quadra NULL em getHQuadra\n");
         return -1.0;
     }
-    QuadraStruct* quad = (QuadraStruct*)q;
+    QuadraStruct *quad = (QuadraStruct*)q;
     return quad->altura;
 }
 
-char* getCorBQuadra(Quadra q) {
+const char* getCorBQuadra(Quadra q) {
     if (!q) {
         fprintf(stderr, "Erro: quadra NULL em getCorBQuadra\n");
         return NULL;
     }
-    QuadraStruct* quad = (QuadraStruct*)q;
-    char* cor = (char*)malloc(7);
-    if (cor) {
-        strncpy(cor, quad->corB, 6);
-        cor[6] = '\0';
-    }
-    return cor;
+    QuadraStruct *quad = (QuadraStruct*)q;
+    return quad->corB;
 }
 
-char* getCorPQuadra(Quadra q) {
+const char* getCorPQuadra(Quadra q) {
     if (!q) {
         fprintf(stderr, "Erro: quadra NULL em getCorPQuadra\n");
         return NULL;
     }
-    QuadraStruct* quad = (QuadraStruct*)q;
-    char* cor = (char*)malloc(7);
-    if (cor) {
-        strncpy(cor, quad->corP, 6);
-        cor[6] = '\0';
-    }
-    return cor;
+    QuadraStruct *quad = (QuadraStruct*)q;
+    return quad->corP;
 }
 
 double getEspBQuadra(Quadra q) {
@@ -187,7 +194,7 @@ double getEspBQuadra(Quadra q) {
         fprintf(stderr, "Erro: quadra NULL em getEspBQuadra\n");
         return -1.0;
     }
-    QuadraStruct* quad = (QuadraStruct*)q;
+    QuadraStruct *quad = (QuadraStruct*)q;
     return quad->espBorda;
 }
 
@@ -196,28 +203,28 @@ void getPontoEndQuadra(Quadra q, char face, double num, double *x, double *y) {
         fprintf(stderr, "Erro: parâmetros inválidos em getPontoEndQuadra\n");
         return;
     }
-    
-    QuadraStruct* quad = (QuadraStruct*)q;
+
+    QuadraStruct *quad = (QuadraStruct*)q;
     char f = normalizaFace(face);
-    double x_face = getXFaceQuadra(q, f);
-    double y_face = getYFaceQuadra(q, f);
-    
+    double x_face = getXFaceQuadra(quad, f);
+    double y_face = getYFaceQuadra(quad, f);
+
     switch (f) {
         case 'N':
-            *x = x_face;
-            *y = y_face - num;
-            break;
-        case 'S':
-            *x = x_face;
-            *y = y_face + num;
-            break;
-        case 'L':
             *x = x_face + num;
             *y = y_face;
             break;
-        case 'O':
-            *x = x_face - num;
+        case 'S':
+            *x = x_face + num;
             *y = y_face;
+            break;
+        case 'L':
+            *x = x_face;
+            *y = y_face - num;
+            break;
+        case 'O':
+            *x = x_face;
+            *y = y_face - num;
             break;
         default:
             *x = 0;
@@ -230,25 +237,25 @@ double areaQuadra(Quadra q) {
         fprintf(stderr, "Erro: quadra NULL em areaQuadra\n");
         return -1.0;
     }
-    QuadraStruct* quad = (QuadraStruct*)q;
+    QuadraStruct *quad = (QuadraStruct*)q;
     return quad->largura * quad->altura;
 }
 
-void setCorBQuadra(Quadra q, char *novaCor) {
+void setCorBQuadra(Quadra q, const char *novaCor) {
     if (!q || !novaCor) {
         fprintf(stderr, "Erro: parâmetros inválidos em setCorBQuadra\n");
         return;
     }
-    QuadraStruct* quad = (QuadraStruct*)q;
+    QuadraStruct *quad = (QuadraStruct*)q;
     preencherCor(quad->corB, novaCor, "000000");
 }
 
-void setCorPQuadra(Quadra q, char *novaCor) {
+void setCorPQuadra(Quadra q, const char *novaCor) {
     if (!q || !novaCor) {
         fprintf(stderr, "Erro: parâmetros inválidos em setCorPQuadra\n");
         return;
     }
-    QuadraStruct* quad = (QuadraStruct*)q;
+    QuadraStruct *quad = (QuadraStruct*)q;
     preencherCor(quad->corP, novaCor, "FFFFFF");
 }
 
@@ -257,24 +264,9 @@ void setEspBQuadra(Quadra q, double novaEspessura) {
         fprintf(stderr, "Erro: parâmetros inválidos em setEspBQuadra\n");
         return;
     }
-    QuadraStruct* quad = (QuadraStruct*)q;
+    QuadraStruct *quad = (QuadraStruct*)q;
     quad->espBorda = novaEspessura;
 }
-
-
-/*
-  Criar uma função calculaPosiçãoEndereco
-  Pega CEP, Face, Número e posição da âncora (x,y)
-  Faz um switch case para cada Face
-
-  Altura = alt
-  Largura = lar
-
-  Norte = x + num, y + alt
-  Sul = x + num, y
-  Leste = x, y + num
-  Oeste = x + lar, y + num
-*/
 
 size_t tamSerialQuadra(void) {
     return sizeof(QuadraStruct);
@@ -285,8 +277,8 @@ int serialQuadra(Quadra q, void *buffer, size_t tamBuffer) {
         fprintf(stderr, "Erro: parâmetros inválidos em serialQuadra\n");
         return 0;
     }
-    
-    QuadraStruct* quad = (QuadraStruct*)q;
+
+    QuadraStruct *quad = (QuadraStruct*)q;
     memcpy(buffer, quad, sizeof(QuadraStruct));
     return 1;
 }
@@ -296,13 +288,13 @@ Quadra desserialQuadra(void *buffer, size_t tamBuffer) {
         fprintf(stderr, "Erro: parâmetros inválidos em desserialQuadra\n");
         return NULL;
     }
-    
-    QuadraStruct* q = (QuadraStruct*)malloc(sizeof(QuadraStruct));
+
+    QuadraStruct *q = (QuadraStruct*)malloc(sizeof(QuadraStruct));
     if (!q) {
         fprintf(stderr, "Erro: falha na alocação em desserialQuadra\n");
         return NULL;
     }
-    
+
     memcpy(q, buffer, sizeof(QuadraStruct));
     return (Quadra)q;
 }
@@ -312,6 +304,6 @@ void freeQuadra(Quadra q) {
         fprintf(stderr, "Aviso: tentativa de liberar quadra NULL\n");
         return;
     }
-    QuadraStruct* quad = (QuadraStruct*)q;
+    QuadraStruct *quad = (QuadraStruct*)q;
     free(quad);
 }
