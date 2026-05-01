@@ -59,26 +59,6 @@ static char normalizaFace(char face) {
     return toupper(face);
 }
 
-static double getXFaceQuadra(const QuadraStruct *quad, char face) {
-    switch (face) {
-        case 'N': return quad->x;
-        case 'S': return quad->x;
-        case 'L': return quad->x;
-        case 'O': return quad->x - quad->largura;
-        default:  return 0;
-    }
-}
-
-static double getYFaceQuadra(const QuadraStruct *quad, char face) {
-    switch (face) {
-        case 'N': return quad->y - quad->altura;
-        case 'S': return quad->y;
-        case 'L': return quad->y;
-        case 'O': return quad->y;
-        default:  return 0;
-    }
-}
-
 Quadra criaQuadra(const char *cep, double x, double y, double l, double h,
                   const char *corB, const char *corP, double espB) {
     if (!cep || strlen(cep) == 0) {
@@ -199,36 +179,26 @@ double getEspBQuadra(Quadra q) {
 }
 
 void getPontoEndQuadra(Quadra q, char face, double num, double *x, double *y) {
-    if (!q || !validaFace(face) || !x || !y) {
-        fprintf(stderr, "Erro: parâmetros inválidos em getPontoEndQuadra\n");
-        return;
-    }
-
     QuadraStruct *quad = (QuadraStruct*)q;
     char f = normalizaFace(face);
-    double x_face = getXFaceQuadra(quad, f);
-    double y_face = getYFaceQuadra(quad, f);
 
     switch (f) {
-        case 'N':
-            *x = x_face + num;
-            *y = y_face;
+        case 'N': 
+            *x = quad->x + num;
+            *y = quad->y;
             break;
-        case 'S':
-            *x = x_face + num;
-            *y = y_face;
+        case 'S': 
+            *x = quad->x + num;
+            *y = quad->y - quad->altura;
             break;
-        case 'L':
-            *x = x_face;
-            *y = y_face - num;
+        case 'L': 
+            *x = quad->x;
+            *y = quad->y - num;
             break;
-        case 'O':
-            *x = x_face;
-            *y = y_face - num;
+        case 'O': 
+            *x = quad->x - quad->largura;
+            *y = quad->y - num;
             break;
-        default:
-            *x = 0;
-            *y = 0;
     }
 }
 
