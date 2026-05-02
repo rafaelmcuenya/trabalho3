@@ -1,3 +1,4 @@
+#include "quadra.h"
 #include "morador.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,10 +14,6 @@ typedef struct {
     int numero;
     char compl[COMPL_LEN];
 } MoradorStruct;
-
-int validaFace(char face) {
-    return (face == 'N' || face == 'n' || face == 'S' || face == 's' || face == 'L' || face == 'l' || face == 'O' || face == 'o');
-}
 
 int validaNum(int num) {
     return num >= 0;
