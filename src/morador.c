@@ -117,7 +117,7 @@ const char* getNascMorador(Morador m) {
         return NULL;
     }
     MoradorStruct *mor = (MoradorStruct*)m;
-    return getNascimentoHabitante(mor->habitante);
+    return getNascHabitante(mor->habitante);
 }
 
 const char* getCepMorador(Morador m) {
