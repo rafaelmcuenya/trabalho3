@@ -1,6 +1,7 @@
 #ifndef HASHFILE_H
 #define HASHFILE_H
 
+#include <stdio.h>
 #include <stddef.h>
 #include <stdint.h>
 
