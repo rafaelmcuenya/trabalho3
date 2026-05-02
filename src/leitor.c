@@ -4,6 +4,7 @@
 #include "habitante.h"
 #include "morador.h"
 #include "hashfile.h"
+#include "svg.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -604,13 +605,13 @@ static void processarComandoPm(const char *linha) {
     sscanf(linha, "%s", comando);
 
     if (strcmp(comando, "p") == 0) {
-    char cpf[32], nome[100], sobrenome[100], sexo[4], nasc[11];
-    if (sscanf(linha, "%*s %s %s %s %s %s", cpf, nome, sobrenome, sexo, nasc) == 5) {
-        cmdP(cpf, nome, sobrenome, sexo[0], nasc);
+        char cpf[32], nome[100], sobrenome[100], sexo[4], nasc[11];
+        if (sscanf(linha, "%*s %s %s %s %s %s", cpf, nome, sobrenome, sexo, nasc) == 5) {
+            cmdP(cpf, nome, sobrenome, sexo[0], nasc);
+        }
     }
-}
     else if (strcmp(comando, "m") == 0) {
-        char cpf[12], cep[32], face[4];
+        char cpf[32], cep[32], face[4];
         int num;
         char resto[128];
         int campos = sscanf(linha, "%*s %s %s %s %d %[^\n]", cpf, cep, face, &num, resto);
@@ -648,25 +649,25 @@ static void processarComandoQry(const char *linha) {
         cmdCenso();
     }
     else if (strcmp(comando, "h?") == 0 || strcmp(comando, "h\?") == 0) {
-        char cpf[12];
+        char cpf[32];
         if (sscanf(linha, "%*s %s", cpf) == 1) {
             cmdH(cpf);
         }
     }
     else if (strcmp(comando, "nasc") == 0) {
-        char cpf[12], nome[100], sobrenome[100], sexo[4], nasc[11];
+        char cpf[32], nome[100], sobrenome[100], sexo[4], nasc[11];
         if (sscanf(linha, "%*s %s %s %s %s %s", cpf, nome, sobrenome, sexo, nasc) == 5) {
             cmdNasc(cpf, nome, sobrenome, sexo[0], nasc);
         }
     }
     else if (strcmp(comando, "rip") == 0) {
-        char cpf[12];
+        char cpf[32];
         if (sscanf(linha, "%*s %s", cpf) == 1) {
             cmdRip(cpf);
         }
     }
     else if (strcmp(comando, "mud") == 0) {
-        char cpf[12], cep[32], face[4];
+        char cpf[32], cep[32], face[4];
         int num;
         char resto[128];
         int campos = sscanf(linha, "%*s %s %s %s %d %[^\n]", cpf, cep, face, &num, resto);
@@ -681,7 +682,7 @@ static void processarComandoQry(const char *linha) {
         }
     }
     else if (strcmp(comando, "dspj") == 0) {
-        char cpf[12];
+        char cpf[32];
         if (sscanf(linha, "%*s %s", cpf) == 1) {
             cmdDspj(cpf);
         }
@@ -753,7 +754,8 @@ void processarArquivoGeo(const char *caminho, const char *inputDir,
 
     char caminhoSvg[PATH_LEN];
     gerarNomeGeoSvg(nomeBase, outputDir, caminhoSvg);
-    printf("[GEO] Arquivo SVG base seria gerado em: %s\n", caminhoSvg);
+    svgGeo(caminhoSvg, hfQuadras);
+    printf("[GEO] Arquivo SVG base gerado: %s\n", caminhoSvg);
 }
 
 void processarArquivoPm(const char *caminho, const char *inputDir,
@@ -803,7 +805,8 @@ void processarArquivoQry(const char *caminho, const char *inputDir,
 
     char caminhoSvg[PATH_LEN];
     gerarNomeQrySvg(nomeBase, nomeBaseQry, outputDir, caminhoSvg);
-    printf("[QRY] Arquivo SVG final seria gerado em: %s\n", caminhoSvg);
+    svgQry(caminhoSvg, hfQuadras, hfMoradores);
+    printf("[QRY] Arquivo SVG final gerado: %s\n", caminhoSvg);
 
     printf("[QRY] Arquivo TXT gerado: %s\n", caminhoTxt);
 }
