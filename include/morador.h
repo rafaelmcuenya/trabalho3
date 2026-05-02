@@ -98,13 +98,6 @@ Retorna o habitante associado ao morador.
 Permite acesso às funções de Habitante quando necessário.
 */
 
-int validaFace(char face);
-/*
-Verifica se um caractere representa uma face válida.
-Primeiro parâmetro é o caractere a ser validado.
-Retorna 1 se válido (N, n, S, s, L, l, O, o), 0 caso contrário.
-*/
-
 int validaNum(int num);
 /*
 Verifica se um número de imóvel é válido (positivo).
