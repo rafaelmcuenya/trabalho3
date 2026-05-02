@@ -575,7 +575,7 @@ static void cmdDspj(const char *cpf) {
     free(bufferMor);
 }
 
-static void Geo(const char *linha) {
+static void ProcessarComandoGeo(const char *linha) {
     if (linha[0] == '\n' || linha[0] == '#' || linha[0] == '\0') return;
 
     char comando[10];
