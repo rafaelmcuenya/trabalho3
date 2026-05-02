@@ -7,7 +7,6 @@
    Uma quadra é representada por um retângulo com âncora no vértice sudeste, seguindo a orientação da roda dos ventos descrita no projeto.
    Possui um CEP alfanumérico que a identifica e diferencia das demais quadras existentes.
    Cada quadra possui 4 faces, nomeadas de acordo com o ponto cardeal correspondente (N, S, L ou O).
-   As cores presentes na quadra devem seguir o padrão sRGB de 6 dígitos (ex: "#FF0000").
    É possível criar/deletar quadras or meio das funções criaQuadra e freeQuadra, respectivamente.
    As demais funções são para funcionamento interno (criação no SVG, outros módulos, etc).
 */
