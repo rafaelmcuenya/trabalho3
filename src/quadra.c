@@ -9,44 +9,23 @@ typedef struct {
     char cep[32];
     double x, y;
     double largura, altura;
-    char corB[8];
-    char corP[8];
+    char corB[32];
+    char corP[32];
     double espBorda;
 } QuadraStruct;
 
 static void preencherCor(char *dest, const char *fonte, const char *corPadrao) {
     if (fonte && strlen(fonte) > 0) {
-        const char *cor = (fonte[0] == '#') ? fonte + 1 : fonte;
-        int len = strlen(cor);
-
-        if (len == 6) {
-            strncpy(dest, cor, 6);
-        } else if (len < 6) {
-            int zeros = 6 - len;
-            for (int i = 0; i < zeros; i++) {
-                dest[i] = '0';
-            }
-            strncpy(dest + zeros, cor, len);
-        } else {
-            strncpy(dest, cor, 6);
-        }
-        dest[6] = '\0';
+        strncpy(dest, fonte, 31);
+        dest[31] = '\0';
     } else {
-        strcpy(dest, corPadrao);
+        strncpy(dest, corPadrao, 31);
+        dest[31] = '\0';
     }
 }
 
 int validaCor(const char *cor) {
     if (!cor || strlen(cor) == 0) return 0;
-
-    const char *corLimpa = (cor[0] == '#') ? cor + 1 : cor;
-    int len = strlen(corLimpa);
-    if (len != 6) return 0;
-
-    for (int i = 0; i < 6; i++) {
-        if (!isxdigit(corLimpa[i])) return 0;
-    }
-
     return 1;
 }
 
