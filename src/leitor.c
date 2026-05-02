@@ -575,7 +575,7 @@ static void cmdDspj(const char *cpf) {
     free(bufferMor);
 }
 
-static void processarComandoGeo(const char *linha) {
+static void Geo(const char *linha) {
     if (linha[0] == '\n' || linha[0] == '#' || linha[0] == '\0') return;
 
     char comando[10];
@@ -604,11 +604,11 @@ static void processarComandoPm(const char *linha) {
     sscanf(linha, "%s", comando);
 
     if (strcmp(comando, "p") == 0) {
-        char cpf[12], nome[100], sobrenome[100], sexo[4], nasc[11];
-        if (sscanf(linha, "%*s %s %s %s %s %s", cpf, nome, sobrenome, sexo, nasc) == 5) {
-            cmdP(cpf, nome, sobrenome, sexo[0], nasc);
-        }
+    char cpf[32], nome[100], sobrenome[100], sexo[4], nasc[11];
+    if (sscanf(linha, "%*s %s %s %s %s %s", cpf, nome, sobrenome, sexo, nasc) == 5) {
+        cmdP(cpf, nome, sobrenome, sexo[0], nasc);
     }
+}
     else if (strcmp(comando, "m") == 0) {
         char cpf[12], cep[32], face[4];
         int num;
