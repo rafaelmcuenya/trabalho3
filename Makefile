@@ -13,13 +13,11 @@ LDFLAGS = -O0
 SRC_DIR = src
 INC_DIR = include
 TST_DIR = test
+UNITY_DIR = unity
 
 # Objetos
 OBJETOS = main.o leitor.o hashfile.o quadra.o habitante.o morador.o \
           trataNomeArquivo.o svg.o
-
-# Objetos de teste
-TST_OBJETOS = t_hashfile.o t_quadra.o t_habitante.o t_morador.o
 
 # Regra principal
 $(PROJ_NAME): $(OBJETOS)
@@ -63,37 +61,38 @@ trataNomeArquivo.o: $(SRC_DIR)/trataNomeArquivo.c $(INC_DIR)/trataNomeArquivo.h
 svg.o: $(SRC_DIR)/svg.c $(INC_DIR)/svg.h $(INC_DIR)/quadra.h $(INC_DIR)/morador.h $(INC_DIR)/hashfile.h
 	$(CC) -c $(CFLAGS) -I$(INC_DIR) $(SRC_DIR)/svg.c -o $@
 
-# Testes unitários
-unity.o: $(TST_DIR)/unity.c $(TST_DIR)/unity.h
-	$(CC) -c $(CFLAGS) -I$(INC_DIR) -I$(TST_DIR) $(TST_DIR)/unity.c -o $@
+# Unity
+unity.o: $(UNITY_DIR)/unity.c $(UNITY_DIR)/unity.h $(UNITY_DIR)/unity_internals.h
+	$(CC) -c $(CFLAGS) -I$(INC_DIR) -I$(UNITY_DIR) $(UNITY_DIR)/unity.c -o $@
 
+# Testes unitários
 t_hashfile: unity.o hashfile.o t_hashfile.o
 	$(CC) -o $@ $(LDFLAGS) unity.o hashfile.o t_hashfile.o -lm
 	./t_hashfile
 
-t_hashfile.o: $(TST_DIR)/t_hashfile.c $(INC_DIR)/hashfile.h $(TST_DIR)/unity.h
-	$(CC) -c $(CFLAGS) -I$(INC_DIR) -I$(TST_DIR) $(TST_DIR)/t_hashfile.c -o $@
+t_hashfile.o: $(TST_DIR)/t_hashfile.c $(INC_DIR)/hashfile.h $(UNITY_DIR)/unity.h
+	$(CC) -c $(CFLAGS) -I$(INC_DIR) -I$(UNITY_DIR) $(TST_DIR)/t_hashfile.c -o $@
 
 t_quadra: unity.o quadra.o t_quadra.o
 	$(CC) -o $@ $(LDFLAGS) unity.o quadra.o t_quadra.o -lm
 	./t_quadra
 
-t_quadra.o: $(TST_DIR)/t_quadra.c $(INC_DIR)/quadra.h $(TST_DIR)/unity.h
-	$(CC) -c $(CFLAGS) -I$(INC_DIR) -I$(TST_DIR) $(TST_DIR)/t_quadra.c -o $@
+t_quadra.o: $(TST_DIR)/t_quadra.c $(INC_DIR)/quadra.h $(UNITY_DIR)/unity.h
+	$(CC) -c $(CFLAGS) -I$(INC_DIR) -I$(UNITY_DIR) $(TST_DIR)/t_quadra.c -o $@
 
 t_habitante: unity.o habitante.o t_habitante.o
 	$(CC) -o $@ $(LDFLAGS) unity.o habitante.o t_habitante.o -lm
 	./t_habitante
 
-t_habitante.o: $(TST_DIR)/t_habitante.c $(INC_DIR)/habitante.h $(TST_DIR)/unity.h
-	$(CC) -c $(CFLAGS) -I$(INC_DIR) -I$(TST_DIR) $(TST_DIR)/t_habitante.c -o $@
+t_habitante.o: $(TST_DIR)/t_habitante.c $(INC_DIR)/habitante.h $(UNITY_DIR)/unity.h
+	$(CC) -c $(CFLAGS) -I$(INC_DIR) -I$(UNITY_DIR) $(TST_DIR)/t_habitante.c -o $@
 
 t_morador: unity.o habitante.o morador.o t_morador.o
 	$(CC) -o $@ $(LDFLAGS) unity.o habitante.o morador.o t_morador.o -lm
 	./t_morador
 
-t_morador.o: $(TST_DIR)/t_morador.c $(INC_DIR)/morador.h $(INC_DIR)/habitante.h $(TST_DIR)/unity.h
-	$(CC) -c $(CFLAGS) -I$(INC_DIR) -I$(TST_DIR) $(TST_DIR)/t_morador.c -o $@
+t_morador.o: $(TST_DIR)/t_morador.c $(INC_DIR)/morador.h $(INC_DIR)/habitante.h $(UNITY_DIR)/unity.h
+	$(CC) -c $(CFLAGS) -I$(INC_DIR) -I$(UNITY_DIR) $(TST_DIR)/t_morador.c -o $@
 
 tstall: t_hashfile t_quadra t_habitante t_morador
 	@echo "Todos os testes executados."
