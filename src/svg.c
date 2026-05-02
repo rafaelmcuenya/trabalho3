@@ -48,7 +48,8 @@ void svgGeo(const char *caminhoCompleto, HashFile *hfQuadras) {
     }
 
     fprintf(svgFile, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-    fprintf(svgFile, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">\n");
+    fprintf(svgFile, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" "
+                     "viewBox=\"0 0 1600 1100\">\n");
 
     iterarHF(hfQuadras, callbackSvgGeo, svgFile);
 
@@ -138,7 +139,8 @@ void svgQry(const char *caminhoCompleto, HashFile *hfQuadras, HashFile *hfMorado
     }
 
     fprintf(svgFile, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-    fprintf(svgFile, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">\n");
+    fprintf(svgFile, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" "
+                     "viewBox=\"0 0 1600 1100\">\n");
 
     iterarHF(hfQuadras, callbackSvgGeo, svgFile);
 
