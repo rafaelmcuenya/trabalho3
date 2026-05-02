@@ -20,14 +20,7 @@ typedef struct {
 } HabitanteStruct;
 
 int validaCpf(const char *cpf) {
-    if (!cpf) return 0;
-    
-    int len = strlen(cpf);
-    if (len != 11) return 0;
-    
-    for (int i = 0; i < 11; i++) {
-        if (!isdigit(cpf[i])) return 0;
-    }
+    if (!cpf || strlen(cpf) == 0) return 0;
     return 1;
 }
 
