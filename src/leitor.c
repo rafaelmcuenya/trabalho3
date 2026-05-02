@@ -590,12 +590,12 @@ static void processarComandoGeo(const char *linha) {
         }
     }
     else if (strcmp(comando, "cq") == 0) {
-        double sw;
-        char cfill[32], cstrk[32];
-        if (sscanf(linha, "%*s %lf %s %s", &sw, cfill, cstrk) == 3) {
-            cmdCq(sw, cfill, cstrk);
-        }
-    }
+    char swStr[16], cfill[32], cstrk[32];
+    if (sscanf(linha, "%*s %s %s %s", swStr, cfill, cstrk) == 3) {
+        double sw = atof(swStr);
+        cmdCq(sw, cfill, cstrk);
+      }
+  }
 }
 
 static void processarComandoPm(const char *linha) {
