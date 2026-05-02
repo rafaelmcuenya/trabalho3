@@ -1,6 +1,7 @@
 #ifndef SVG_H
 #define SVG_H
 
+#include <stdio.h>
 #include "quadra.h"
 #include "hashfile.h"
 
