@@ -1,6 +1,7 @@
 #ifndef HABITANTE_H
 #define HABITANTE_H
 
+#include <stdio.h>
 #include <stddef.h>
 
 /*
