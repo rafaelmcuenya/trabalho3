@@ -25,6 +25,7 @@ static char nomeBaseGlobal[FILE_NAME_LEN];
 static char outputDirGlobal[PATH_LEN];
 
 static FILE *arquivoTxt = NULL;
+static FILE *svgFileQry = NULL;
 
 static int homensCenso = 0;
 static int mulheresCenso = 0;
@@ -249,18 +250,27 @@ static void cmdRq(const char *cep) {
     void *bufferQuadra = malloc(tamQuadra);
     if (!bufferQuadra) return;
 
-    if (buscaHF(hfQuadras, cep, bufferQuadra, &tamQuadra) != 1) {
-        fprintf(stderr, "Erro: quadra %s não encontrada para remoção\n", cep);
-        free(bufferQuadra);
-        return;
+    Quadra q = NULL;
+    if (buscaHF(hfQuadras, cep, bufferQuadra, &tamQuadra) == 1) {
+        q = desserialQuadra(bufferQuadra, tamQuadra);
     }
     free(bufferQuadra);
+
+    if (!q) {
+        fprintf(stderr, "Erro: quadra %s não encontrada para remoção\n", cep);
+        return;
+    }
 
     fprintf(arquivoTxt, "[*] rq %s\n", cep);
     fprintf(arquivoTxt, "Moradores removidos:\n");
 
     iterarHF(hfMoradores, callbackRq, (void*)cep);
 
+    if (svgFileQry) {
+        svgMarcarRemocaoQuadra(svgFileQry, q);
+    }
+
+    freeQuadra(q);
     deletarItemHF(hfQuadras, cep);
 }
 
@@ -297,6 +307,19 @@ static void cmdPq(const char *cep) {
     fprintf(arquivoTxt, "Face L: %d moradores\n", pqFaceL);
     fprintf(arquivoTxt, "Face O: %d moradores\n", pqFaceO);
     fprintf(arquivoTxt, "Total: %d moradores\n", totalQuadra);
+
+    if (svgFileQry) {
+        size_t tamQ = tamSerialQuadra();
+        void *bufQ = malloc(tamQ);
+        if (bufQ && buscaHF(hfQuadras, cep, bufQ, &tamQ) == 1) {
+            Quadra q = desserialQuadra(bufQ, tamQ);
+            if (q) {
+                svgMarcarMoradoresPorFace(svgFileQry, q, pqFaceN, pqFaceS, pqFaceL, pqFaceO);
+                freeQuadra(q);
+            }
+        }
+        free(bufQ);
+    }
 }
 
 static void callbackCensoHab(const char *chave, const void *dado, sizeT tamDado, void *contexto) {
@@ -459,7 +482,28 @@ static void cmdRip(const char *cpf) {
             fprintf(arquivoTxt, "Nascimento: %s\n", getNascHabitante(h));
 
             if (isMoradorHabitante(h)) {
-                fprintf(arquivoTxt, "Endereço: %s\n", getIdMoradiaHabitante(h));
+                const char *idMoradia = getIdMoradiaHabitante(h);
+                fprintf(arquivoTxt, "Endereço: %s\n", idMoradia);
+
+                if (svgFileQry && idMoradia) {
+                    char cep[32], face;
+                    int num;
+                    if (sscanf(idMoradia, "%[^/]/%c/%d", cep, &face, &num) == 3) {
+                        size_t tamQ = tamSerialQuadra();
+                        void *bufQ = malloc(tamQ);
+                        if (bufQ && buscaHF(hfQuadras, cep, bufQ, &tamQ) == 1) {
+                            Quadra q = desserialQuadra(bufQ, tamQ);
+                            if (q) {
+                                double x, y;
+                                getPontoEndQuadra(q, face, (double)num, &x, &y);
+                                svgMarcarFalecimento(svgFileQry, x, y);
+                                freeQuadra(q);
+                            }
+                        }
+                        free(bufQ);
+                    }
+                }
+
                 deletarItemHF(hfMoradores, cpf);
             }
 
@@ -491,6 +535,14 @@ static void cmdMud(const char *cpf, const char *cep, char face, int num, const c
     free(bufferHab);
 
     if (!h) return;
+
+    size_t tamQ = tamSerialQuadra();
+    void *bufQ = malloc(tamQ);
+    Quadra q = NULL;
+    if (bufQ && buscaHF(hfQuadras, cep, bufQ, &tamQ) == 1) {
+        q = desserialQuadra(bufQ, tamQ);
+    }
+    free(bufQ);
 
     deletarItemHF(hfMoradores, cpf);
 
@@ -524,6 +576,13 @@ static void cmdMud(const char *cpf, const char *cep, char face, int num, const c
         freeMorador(m);
     }
 
+    if (svgFileQry && q) {
+        double x, y;
+        getPontoEndQuadra(q, face, (double)num, &x, &y);
+        svgMarcarMudanca(svgFileQry, x, y, cpf);
+    }
+
+    if (q) freeQuadra(q);
     freeHabitante(h);
     fprintf(arquivoTxt, "Mudança realizada\n");
 }
@@ -544,6 +603,25 @@ static void cmdDspj(const char *cpf) {
             const char *endereco = getEnderecoCompletoMorador(m);
             fprintf(arquivoTxt, "Endereço do despejo: %s\n", endereco);
             free((void*)endereco);
+
+            if (svgFileQry) {
+                const char *cep = getCepMorador(m);
+                char face = getFaceMorador(m);
+                int num = getNumMorador(m);
+
+                size_t tamQ = tamSerialQuadra();
+                void *bufQ = malloc(tamQ);
+                if (bufQ && buscaHF(hfQuadras, cep, bufQ, &tamQ) == 1) {
+                    Quadra q = desserialQuadra(bufQ, tamQ);
+                    if (q) {
+                        double x, y;
+                        getPontoEndQuadra(q, face, (double)num, &x, &y);
+                        svgMarcarDespejo(svgFileQry, x, y);
+                        freeQuadra(q);
+                    }
+                }
+                free(bufQ);
+            }
 
             freeMorador(m);
         }
@@ -590,12 +668,12 @@ static void processarComandoGeo(const char *linha) {
         }
     }
     else if (strcmp(comando, "cq") == 0) {
-    char swStr[16], cfill[32], cstrk[32];
-    if (sscanf(linha, "%*s %s %s %s", swStr, cfill, cstrk) == 3) {
-        double sw = atof(swStr);
-        cmdCq(sw, cfill, cstrk);
-      }
-  }
+        char swStr[16], cfill[32], cstrk[32];
+        if (sscanf(linha, "%*s %s %s %s", swStr, cfill, cstrk) == 3) {
+            double sw = atof(swStr);
+            cmdCq(sw, cfill, cstrk);
+        }
+    }
 }
 
 static void processarComandoPm(const char *linha) {
@@ -734,6 +812,11 @@ void finalizarSistema(void) {
         arquivoTxt = NULL;
     }
 
+    if (svgFileQry) {
+        fclose(svgFileQry);
+        svgFileQry = NULL;
+    }
+
     printf("[SISTEMA] Sistema finalizado\n");
 }
 
@@ -793,6 +876,17 @@ void processarArquivoQry(const char *caminho, const char *inputDir,
         return;
     }
 
+    char caminhoSvg[PATH_LEN];
+    gerarNomeQrySvg(nomeBase, nomeBaseQry, outputDir, caminhoSvg);
+
+    svgFileQry = fopen(caminhoSvg, "w");
+    if (svgFileQry) {
+        fprintf(svgFileQry, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        fprintf(svgFileQry, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" "
+                            "viewBox=\"0 0 1600 1100\">\n");
+        iterarHF(hfQuadras, callbackSvgGeo, svgFileQry);
+    }
+
     FILE *f;
     abrirArquivo(&f, caminhoCompleto);
 
@@ -803,10 +897,12 @@ void processarArquivoQry(const char *caminho, const char *inputDir,
 
     fclose(f);
 
-    char caminhoSvg[PATH_LEN];
-    gerarNomeQrySvg(nomeBase, nomeBaseQry, outputDir, caminhoSvg);
-    svgQry(caminhoSvg, hfQuadras, hfMoradores);
-    printf("[QRY] Arquivo SVG final gerado: %s\n", caminhoSvg);
+    if (svgFileQry) {
+        fprintf(svgFileQry, "</svg>");
+        fclose(svgFileQry);
+        svgFileQry = NULL;
+    }
 
+    printf("[QRY] Arquivo SVG final gerado: %s\n", caminhoSvg);
     printf("[QRY] Arquivo TXT gerado: %s\n", caminhoTxt);
 }
