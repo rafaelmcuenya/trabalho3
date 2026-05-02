@@ -176,7 +176,7 @@ static void cmdM(const char *cpf, const char *cep, char face, int num, const cha
     free(bufferAtualizado);
 
     Morador m = criaMorador(cpf, getNomeHabitante(h), getSobrenomeHabitante(h),
-                            getSexoHabitante(h), getNascimentoHabitante(h),
+                            getSexoHabitante(h), getNascHabitante(h),
                             cep, face, num, compl);
 
     if (!m) {
@@ -392,7 +392,7 @@ static void cmdH(const char *cpf) {
             fprintf(arquivoTxt, "CPF: %s\n", getCpfHabitante(h));
             fprintf(arquivoTxt, "Nome: %s %s\n", getNomeHabitante(h), getSobrenomeHabitante(h));
             fprintf(arquivoTxt, "Sexo: %c\n", getSexoHabitante(h));
-            fprintf(arquivoTxt, "Nascimento: %s\n", getNascimentoHabitante(h));
+            fprintf(arquivoTxt, "Nascimento: %s\n", getNascHabitante(h));
 
             if (isMoradorHabitante(h)) {
                 fprintf(arquivoTxt, "Endereço: %s\n", getIdMoradiaHabitante(h));
@@ -455,7 +455,7 @@ static void cmdRip(const char *cpf) {
             fprintf(arquivoTxt, "Falecido: %s %s\n", getNomeHabitante(h), getSobrenomeHabitante(h));
             fprintf(arquivoTxt, "CPF: %s\n", getCpfHabitante(h));
             fprintf(arquivoTxt, "Sexo: %c\n", getSexoHabitante(h));
-            fprintf(arquivoTxt, "Nascimento: %s\n", getNascimentoHabitante(h));
+            fprintf(arquivoTxt, "Nascimento: %s\n", getNascHabitante(h));
 
             if (isMoradorHabitante(h)) {
                 fprintf(arquivoTxt, "Endereço: %s\n", getIdMoradiaHabitante(h));
@@ -510,7 +510,7 @@ static void cmdMud(const char *cpf, const char *cep, char face, int num, const c
     }
 
     Morador m = criaMorador(cpf, getNomeHabitante(h), getSobrenomeHabitante(h),
-                            getSexoHabitante(h), getNascimentoHabitante(h),
+                            getSexoHabitante(h), getNascHabitante(h),
                             cep, face, num, compl);
     if (m) {
         size_t tamMor = tamSerialMorador();
@@ -613,11 +613,13 @@ static void processarComandoPm(const char *linha) {
         char cpf[12], cep[32], face[4];
         int num;
         char resto[128];
-        if (sscanf(linha, "%*s %s %s %s %d %[^\n]", cpf, cep, face, &num, resto) >= 4) {
+        int campos = sscanf(linha, "%*s %s %s %s %d %[^\n]", cpf, cep, face, &num, resto);
+        if (campos >= 4) {
             char *compl = NULL;
-            if (sscanf(linha, "%*s %*s %*s %*s %*d %[^\n]", resto) == 1) {
-                while (*resto == ' ') resto++;
-                if (strlen(resto) > 0) compl = resto;
+            if (campos == 5) {
+                char *p = resto;
+                while (*p == ' ') p++;
+                if (strlen(p) > 0) compl = p;
             }
             cmdM(cpf, cep, face[0], num, compl);
         }
