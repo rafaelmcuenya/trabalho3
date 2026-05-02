@@ -669,11 +669,13 @@ static void processarComandoQry(const char *linha) {
         char cpf[12], cep[32], face[4];
         int num;
         char resto[128];
-        if (sscanf(linha, "%*s %s %s %s %d %[^\n]", cpf, cep, face, &num, resto) >= 4) {
+        int campos = sscanf(linha, "%*s %s %s %s %d %[^\n]", cpf, cep, face, &num, resto);
+        if (campos >= 4) {
             char *compl = NULL;
-            if (sscanf(linha, "%*s %*s %*s %*s %*d %[^\n]", resto) == 1) {
-                while (*resto == ' ') resto++;
-                if (strlen(resto) > 0) compl = resto;
+            if (campos == 5) {
+                char *p = resto;
+                while (*p == ' ') p++;
+                if (strlen(p) > 0) compl = p;
             }
             cmdMud(cpf, cep, face[0], num, compl);
         }
