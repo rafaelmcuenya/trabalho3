@@ -841,8 +841,7 @@ void processarArquivoGeo(const char *caminho, const char *inputDir,
     printf("[GEO] Arquivo SVG base gerado: %s\n", caminhoSvg);
 }
 
-void processarArquivoPm(const char *caminho, const char *inputDir,
-                        const char *nomeBase) {
+void processarArquivoPm(const char *caminho, const char *inputDir, const char *nomeBase) {
     char caminhoCompleto[PATH_LEN];
     construirCaminhoCompleto(inputDir, caminho, caminhoCompleto);
 
@@ -859,8 +858,7 @@ void processarArquivoPm(const char *caminho, const char *inputDir,
     printf("[PM] Arquivo processado\n");
 }
 
-void processarArquivoQry(const char *caminho, const char *inputDir,
-                         const char *nomeBase, const char *outputDir) {
+void processarArquivoQry(const char *caminho, const char *inputDir, const char *nomeBase, const char *outputDir) {
     char caminhoCompleto[PATH_LEN];
     construirCaminhoCompleto(inputDir, caminho, caminhoCompleto);
 
@@ -881,10 +879,10 @@ void processarArquivoQry(const char *caminho, const char *inputDir,
 
     svgFileQry = fopen(caminhoSvg, "w");
     if (svgFileQry) {
-        fprintf(svgFileQry, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        fprintf(svgFileQry, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" "
-                            "viewBox=\"0 0 1600 1100\">\n");
-        desenharQuadrasSvg(hfQuadras, svgFileQry);
+            fprintf(svgFileQry, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+            fprintf(svgFileQry, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" "
+                        "viewBox=\"0 0 9000 4500\">\n");
+          desenharQuadrasSvg(hfQuadras, svgFileQry);
     }
 
     FILE *f;
