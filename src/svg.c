@@ -24,8 +24,8 @@ static void desenharQuadraSvg(FILE *svgFile, Quadra q) {
                      "fill-opacity=\"0.5\"/>\n",
             svgX, svgY, w, h, corP, corB, sw);
 
-    double centroX = x - w / 2.0;
-    double centroY = y - h / 2.0;
+    double centroX = x + w / 2.0;
+    double centroY = y + h / 2.0;
     fprintf(svgFile, "<text x=\"%.2f\" y=\"%.2f\" font-size=\"6\" "
                      "text-anchor=\"middle\" fill=\"%s\">%s</text>\n",
             centroX, centroY, corB, cep);
