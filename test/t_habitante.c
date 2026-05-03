@@ -108,9 +108,9 @@ void test_getSexoHabitante(void) {
     TEST_ASSERT_EQUAL_CHAR('F', getSexoHabitante(h2));
 }
 
-void test_getNascimentoHabitante(void) {
-    TEST_ASSERT_EQUAL_STRING("15/03/1985", getNascimentoHabitante(h1));
-    TEST_ASSERT_EQUAL_STRING("20/07/1990", getNascimentoHabitante(h2));
+void test_getNascHabitante(void) {
+    TEST_ASSERT_EQUAL_STRING("15/03/1985", getNascHabitante(h1));
+    TEST_ASSERT_EQUAL_STRING("20/07/1990", getNascHabitante(h2));
 }
 
 void test_isMoradorHabitante_inicial(void) {
@@ -199,7 +199,7 @@ void test_serialDesserialHabitante(void) {
     TEST_ASSERT_EQUAL_STRING(getNomeHabitante(h1), getNomeHabitante(reconstruido));
     TEST_ASSERT_EQUAL_STRING(getSobrenomeHabitante(h1), getSobrenomeHabitante(reconstruido));
     TEST_ASSERT_EQUAL_CHAR(getSexoHabitante(h1), getSexoHabitante(reconstruido));
-    TEST_ASSERT_EQUAL_STRING(getNascimentoHabitante(h1), getNascimentoHabitante(reconstruido));
+    TEST_ASSERT_EQUAL_STRING(getNascHabitante(h1), getNascHabitante(reconstruido));
     TEST_ASSERT_EQUAL_INT(isMoradorHabitante(h1), isMoradorHabitante(reconstruido));
     TEST_ASSERT_EQUAL_STRING(getIdMoradiaHabitante(h1), getIdMoradiaHabitante(reconstruido));
 
@@ -213,7 +213,7 @@ void test_getters_com_NULL(void) {
     TEST_ASSERT_NULL(getSobrenomeHabitante(NULL));
     TEST_ASSERT_NULL(getNomeCompletoHabitante(NULL));
     TEST_ASSERT_EQUAL_CHAR('\0', getSexoHabitante(NULL));
-    TEST_ASSERT_NULL(getNascimentoHabitante(NULL));
+    TEST_ASSERT_NULL(getNascHabitante(NULL));
     TEST_ASSERT_NULL(getIdMoradiaHabitante(NULL));
     TEST_ASSERT_EQUAL_INT(-1, isMoradorHabitante(NULL));
 }
@@ -237,7 +237,7 @@ int main(void) {
     RUN_TEST(test_getSobrenomeHabitante);
     RUN_TEST(test_getNomeCompletoHabitante);
     RUN_TEST(test_getSexoHabitante);
-    RUN_TEST(test_getNascimentoHabitante);
+    RUN_TEST(test_getNascHabitante);
     RUN_TEST(test_isMoradorHabitante_inicial);
     RUN_TEST(test_setIdMoradiaHabitante);
     RUN_TEST(test_setIdMoradiaHabitante_NULL);
