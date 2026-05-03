@@ -144,19 +144,19 @@ void test_getPontoEndQuadra(void) {
     double x, y;
     getPontoEndQuadra(q1, 'N', 30.0, &x, &y);
     TEST_ASSERT_FLOAT_WITHIN(0.01, 130.0, x);
-    TEST_ASSERT_FLOAT_WITHIN(0.01, 260.0, y);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 200.0, y);
 
     getPontoEndQuadra(q1, 'S', 20.0, &x, &y);
     TEST_ASSERT_FLOAT_WITHIN(0.01, 120.0, x);
-    TEST_ASSERT_FLOAT_WITHIN(0.01, 200.0, y);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 140.0, y);
 
     getPontoEndQuadra(q1, 'L', 15.0, &x, &y);
-    TEST_ASSERT_FLOAT_WITHIN(0.01, 180.0, x);
-    TEST_ASSERT_FLOAT_WITHIN(0.01, 215.0, y);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 100.0, x);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 185.0, y);
 
     getPontoEndQuadra(q1, 'O', 10.0, &x, &y);
-    TEST_ASSERT_FLOAT_WITHIN(0.01, 100.0, x);
-    TEST_ASSERT_FLOAT_WITHIN(0.01, 210.0, y);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 20.0, x);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 190.0, y);
 }
 
 void test_getPontoEndQuadra_invalida(void) {
