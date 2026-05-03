@@ -702,6 +702,7 @@ static void processarComandoPm(const char *linha) {
         }
         cmdM(cpf, cep, faceLetra, num, compl);
     }
+  }
 }
 
 static void processarComandoQry(const char *linha) {
