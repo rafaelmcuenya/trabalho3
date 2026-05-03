@@ -133,6 +133,7 @@ void test_setEspBQuadra(void) {
 }
 
 void test_setEspBQuadra_invalida(void) {
+    setEspBQuadra(q1, 3.5);
     setEspBQuadra(q1, 0);
     TEST_ASSERT_FLOAT_WITHIN(0.01, 3.5, getEspBQuadra(q1));
     setEspBQuadra(q1, -1.0);
