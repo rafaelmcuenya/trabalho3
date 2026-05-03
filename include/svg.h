@@ -62,4 +62,11 @@ void svgMarcarFalecimento(FILE *svgFile, double x, double y);
    Segundo e terceiro parâmetros são as coordenadas do endereço.
 */
 
+void desenharQuadrasSvg(HashFile *hfQuadras, FILE *svgFile);
+/*
+   Desenha a quadra no arquivo SVG.
+   Primeiro parâmetro é o hashfile das quadras.
+   Segundo parâmetro é o arquivo SVG aberto para escrita
+*/
+
 #endif
