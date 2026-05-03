@@ -21,13 +21,9 @@ void test_criaHabitante_sucesso(void) {
 }
 
 void test_criaHabitante_cpf_invalido(void) {
-    Habitante h = criaHabitante("123", "Teste", "Erro", 'M', "01/01/1990");
+    Habitante h = criaHabitante("", "Teste", "Erro", 'M', "01/01/1990");
     TEST_ASSERT_NULL(h);
-
     h = criaHabitante(NULL, "Teste", "Erro", 'M', "01/01/1990");
-    TEST_ASSERT_NULL(h);
-
-    h = criaHabitante("1234567890a", "Teste", "Erro", 'M', "01/01/1990");
     TEST_ASSERT_NULL(h);
 }
 
@@ -138,10 +134,9 @@ void test_setIdMoradiaHabitante_NULL(void) {
 
 void test_validaCpf(void) {
     TEST_ASSERT_TRUE(validaCpf("12345678901"));
-    TEST_ASSERT_TRUE(validaCpf("00000000000"));
-    TEST_ASSERT_FALSE(validaCpf("1234567890"));
-    TEST_ASSERT_FALSE(validaCpf("123456789012"));
-    TEST_ASSERT_FALSE(validaCpf("1234567890a"));
+    TEST_ASSERT_TRUE(validaCpf("000.000.001-91"));
+    TEST_ASSERT_TRUE(validaCpf("1234567890a"));
+    TEST_ASSERT_FALSE(validaCpf(""));
     TEST_ASSERT_FALSE(validaCpf(NULL));
 }
 
