@@ -689,19 +689,18 @@ static void processarComandoPm(const char *linha) {
         }
     }
     else if (strcmp(comando, "m") == 0) {
-        char cpf[32], cep[32], face[4];
-        int num;
-        char resto[128];
-        int campos = sscanf(linha, "%*s %s %s %s %d %[^\n]", cpf, cep, face, &num, resto);
-        if (campos >= 4) {
-            char *compl = NULL;
-            if (campos == 5) {
-                char *p = resto;
-                while (*p == ' ') p++;
-                if (strlen(p) > 0) compl = p;
-            }
-            cmdM(cpf, cep, face[0], num, compl);
+    char cpf[32], cep[32], faceLetra;
+    int num;
+    char resto[128];
+    int campos = sscanf(linha, "%*s %s %s Face.%c %d %[^\n]", cpf, cep, &faceLetra, &num, resto);
+    if (campos >= 4) {
+        char *compl = NULL;
+        if (campos == 5) {
+            char *p = resto;
+            while (*p == ' ') p++;
+            if (strlen(p) > 0) compl = p;
         }
+        cmdM(cpf, cep, faceLetra, num, compl);
     }
 }
 
@@ -745,19 +744,19 @@ static void processarComandoQry(const char *linha) {
         }
     }
     else if (strcmp(comando, "mud") == 0) {
-        char cpf[32], cep[32], face[4];
-        int num;
-        char resto[128];
-        int campos = sscanf(linha, "%*s %s %s %s %d %[^\n]", cpf, cep, face, &num, resto);
-        if (campos >= 4) {
-            char *compl = NULL;
-            if (campos == 5) {
-                char *p = resto;
-                while (*p == ' ') p++;
-                if (strlen(p) > 0) compl = p;
-            }
-            cmdMud(cpf, cep, face[0], num, compl);
+      char cpf[32], cep[32], faceLetra;
+      int num;
+      char resto[128];
+      int campos = sscanf(linha, "%*s %s %s Face.%c %d %[^\n]", cpf, cep, &faceLetra, &num, resto);
+      if (campos >= 4) {
+        char *compl = NULL;
+        if (campos == 5) {
+            char *p = resto;
+            while (*p == ' ') p++;
+            if (strlen(p) > 0) compl = p;
         }
+        cmdMud(cpf, cep, faceLetra, num, compl);
+       }
     }
     else if (strcmp(comando, "dspj") == 0) {
         char cpf[32];
