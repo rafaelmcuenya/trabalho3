@@ -76,8 +76,8 @@ void svgMarcarMoradoresPorFace(FILE *svgFile, Quadra q, int faceN, int faceS, in
     double w = getLQuadra(q);
     double h = getHQuadra(q);
 
-    double cx = x - w / 2.0;
-    double cy = y - h / 2.0;
+    double cx = x + w / 2.0;
+    double cy = y + h / 2.0;
     int total = faceN + faceS + faceL + faceO;
     fprintf(svgFile, "<text x=\"%.2f\" y=\"%.2f\" font-size=\"7\" "
                      "text-anchor=\"middle\" fill=\"black\" font-weight=\"bold\">%d</text>\n",
@@ -85,19 +85,19 @@ void svgMarcarMoradoresPorFace(FILE *svgFile, Quadra q, int faceN, int faceS, in
 
     fprintf(svgFile, "<text x=\"%.2f\" y=\"%.2f\" font-size=\"5\" "
                      "text-anchor=\"middle\" fill=\"blue\">%d</text>\n",
-            cx, y - h + 5, faceN);
+            cx, y + h - 5, faceN);
 
     fprintf(svgFile, "<text x=\"%.2f\" y=\"%.2f\" font-size=\"5\" "
                      "text-anchor=\"middle\" fill=\"blue\">%d</text>\n",
-            cx, y - 5, faceS);
+            cx, y + 12, faceS);
 
     fprintf(svgFile, "<text x=\"%.2f\" y=\"%.2f\" font-size=\"5\" "
                      "text-anchor=\"start\" fill=\"blue\">%d</text>\n",
-            x - w + 2, cy, faceO);
+            x + 2, cy, faceO);
 
     fprintf(svgFile, "<text x=\"%.2f\" y=\"%.2f\" font-size=\"5\" "
                      "text-anchor=\"end\" fill=\"blue\">%d</text>\n",
-            x - 2, cy, faceL);
+            x + w - 2, cy, faceL);
 }
 
 void svgMarcarMudanca(FILE *svgFile, double x, double y, const char *cpf) {
