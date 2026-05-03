@@ -1,4 +1,5 @@
 #include "unity.h"
+#include "quadra.h"
 #include "morador.h"
 #include "habitante.h"
 #include <stdlib.h>
