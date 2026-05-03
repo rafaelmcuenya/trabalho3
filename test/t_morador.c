@@ -52,7 +52,10 @@ void test_criaMorador_sucesso(void) {
 }
 
 void test_criaMorador_cpf_invalido(void) {
-    Morador m = criaMorador("123", "Teste", "Erro", 'M', "01/01/1990", "cep01", 'N', 10, NULL);
+    Morador m = criaMorador("", "Teste", "Erro", 'M', "01/01/1990", "cep01", 'N', 10, NULL);
+    TEST_ASSERT_NULL(m);
+    
+    m = criaMorador(NULL, "Teste", "Erro", 'M', "01/01/1990", "cep01", 'N', 10, NULL);
     TEST_ASSERT_NULL(m);
 }
 
