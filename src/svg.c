@@ -16,8 +16,8 @@ static void desenharQuadraSvg(FILE *svgFile, Quadra q) {
     double sw = getEspBQuadra(q);
     const char *cep = getCepQuadra(q);
 
-    double svgX = x - w;
-    double svgY = y - h;
+    double svgX = x;
+    double svgY = y;
 
     fprintf(svgFile, "<rect x=\"%.2f\" y=\"%.2f\" width=\"%.2f\" height=\"%.2f\" "
                      "fill=\"%s\" stroke=\"%s\" stroke-width=\"%.1f\" "
