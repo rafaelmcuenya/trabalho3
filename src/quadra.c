@@ -164,19 +164,19 @@ void getPontoEndQuadra(Quadra q, char face, double num, double *x, double *y) {
     switch (f) {
         case 'N': 
             *x = quad->x + num;
-            *y = quad->y;
+            *y = quad->y + quad->altura;
             break;
         case 'S': 
             *x = quad->x + num;
-            *y = quad->y - quad->altura;
+            *y = quad->y;
             break;
         case 'L': 
-            *x = quad->x;
-            *y = quad->y - num;
+            *x = quad->x + quad->largura;
+            *y = quad->y + num;
             break;
         case 'O': 
-            *x = quad->x - quad->largura;
-            *y = quad->y - num;
+            *x = quad->x;
+            *y = quad->y + num;
             break;
     }
 }
