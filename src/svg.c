@@ -131,6 +131,10 @@ void svgMarcarFalecimento(FILE *svgFile, double x, double y) {
             x - tamanho, y, x + tamanho, y);
 }
 
+void desenharQuadrasSvg(HashFile *hfQuadras, FILE *svgFile) {
+    iterarHF(hfQuadras, callbackSvgGeo, svgFile);
+}
+
 void svgQry(const char *caminhoCompleto, HashFile *hfQuadras, HashFile *hfMoradores) {
     FILE *svgFile = fopen(caminhoCompleto, "w");
     if (!svgFile) {
