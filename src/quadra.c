@@ -158,6 +158,7 @@ double getEspBQuadra(Quadra q) {
 }
 
 void getPontoEndQuadra(Quadra q, char face, double num, double *x, double *y) {
+    if (!q || !x || !y) return;
     QuadraStruct *quad = (QuadraStruct*)q;
     char f = normalizaFace(face);
 
