@@ -1,6 +1,6 @@
 # Nome do executável
 PROJ_NAME = ted
-ALUNO = Nome Completo
+ALUNO = Rafael Matui Cuenya
 
 # Compilador
 CC = gcc
@@ -34,7 +34,7 @@ main.o: $(SRC_DIR)/main.c $(INC_DIR)/leitor.h $(INC_DIR)/trataNomeArquivo.h
 # Módulo leitor
 leitor.o: $(SRC_DIR)/leitor.c $(INC_DIR)/leitor.h $(INC_DIR)/quadra.h \
            $(INC_DIR)/habitante.h $(INC_DIR)/morador.h $(INC_DIR)/hashfile.h \
-           $(INC_DIR)/trataNomeArquivo.h
+           $(INC_DIR)/trataNomeArquivo.h $(INC_DIR)/svg.h
 	$(CC) -c $(CFLAGS) -I$(INC_DIR) $(SRC_DIR)/leitor.c -o $@
 
 # Módulo hashfile
@@ -50,7 +50,7 @@ habitante.o: $(SRC_DIR)/habitante.c $(INC_DIR)/habitante.h
 	$(CC) -c $(CFLAGS) -I$(INC_DIR) $(SRC_DIR)/habitante.c -o $@
 
 # Módulo morador
-morador.o: $(SRC_DIR)/morador.c $(INC_DIR)/morador.h $(INC_DIR)/habitante.h
+morador.o: $(SRC_DIR)/morador.c $(INC_DIR)/morador.h $(INC_DIR)/habitante.h $(INC_DIR)/quadra.h
 	$(CC) -c $(CFLAGS) -I$(INC_DIR) $(SRC_DIR)/morador.c -o $@
 
 # Módulo de tratamento de nomes
@@ -87,11 +87,11 @@ t_habitante: unity.o habitante.o t_habitante.o
 t_habitante.o: $(TST_DIR)/t_habitante.c $(INC_DIR)/habitante.h $(UNITY_DIR)/unity.h
 	$(CC) -c $(CFLAGS) -I$(INC_DIR) -I$(UNITY_DIR) $(TST_DIR)/t_habitante.c -o $@
 
-t_morador: unity.o habitante.o morador.o t_morador.o
-	$(CC) -o $@ $(LDFLAGS) unity.o habitante.o morador.o t_morador.o -lm
+t_morador: unity.o quadra.o habitante.o morador.o t_morador.o
+	$(CC) -o $@ $(LDFLAGS) unity.o quadra.o habitante.o morador.o t_morador.o -lm
 	./t_morador
 
-t_morador.o: $(TST_DIR)/t_morador.c $(INC_DIR)/morador.h $(INC_DIR)/habitante.h $(UNITY_DIR)/unity.h
+t_morador.o: $(TST_DIR)/t_morador.c $(INC_DIR)/morador.h $(INC_DIR)/habitante.h $(INC_DIR)/quadra.h $(UNITY_DIR)/unity.h
 	$(CC) -c $(CFLAGS) -I$(INC_DIR) -I$(UNITY_DIR) $(TST_DIR)/t_morador.c -o $@
 
 tstall: t_hashfile t_quadra t_habitante t_morador
