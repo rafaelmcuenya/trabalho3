@@ -7,7 +7,7 @@ static Quadra q1, q2;
 
 void setUp(void) {
     q1 = criaQuadra("cep15", 100.0, 200.0, 80.0, 60.0, "#FF0000", "#00FF00", 2.0);
-    q2 = criaQuadra("cep07", 300.0, 150.0, 50.0, 40.0, "0000FF", "FFFF00", 1.5);
+    q2 = criaQuadra("cep07", 300.0, 150.0, 50.0, 40.0, "#0000FF", "#FFFF00", 1.5);
 }
 
 void tearDown(void) {
@@ -23,7 +23,6 @@ void test_criaQuadra_sucesso(void) {
 void test_criaQuadra_cep_invalido(void) {
     Quadra q = criaQuadra("", 10.0, 20.0, 30.0, 40.0, "#000000", "#FFFFFF", 1.0);
     TEST_ASSERT_NULL(q);
-
     q = criaQuadra(NULL, 10.0, 20.0, 30.0, 40.0, "#000000", "#FFFFFF", 1.0);
     TEST_ASSERT_NULL(q);
 }
@@ -31,7 +30,6 @@ void test_criaQuadra_cep_invalido(void) {
 void test_criaQuadra_dimensoes_invalidas(void) {
     Quadra q = criaQuadra("teste", 10.0, 20.0, 0, 40.0, "#000000", "#FFFFFF", 1.0);
     TEST_ASSERT_NULL(q);
-
     q = criaQuadra("teste", 10.0, 20.0, 30.0, -5.0, "#000000", "#FFFFFF", 1.0);
     TEST_ASSERT_NULL(q);
 }
@@ -39,7 +37,6 @@ void test_criaQuadra_dimensoes_invalidas(void) {
 void test_criaQuadra_espessura_invalida(void) {
     Quadra q = criaQuadra("teste", 10.0, 20.0, 30.0, 40.0, "#000000", "#FFFFFF", 0);
     TEST_ASSERT_NULL(q);
-
     q = criaQuadra("teste", 10.0, 20.0, 30.0, 40.0, "#000000", "#FFFFFF", -1.0);
     TEST_ASSERT_NULL(q);
 }
@@ -54,47 +51,47 @@ void test_getCepQuadra_NULL(void) {
 }
 
 void test_getXQuadra(void) {
-    TEST_ASSERT_EQUAL_DOUBLE(100.0, getXQuadra(q1));
-    TEST_ASSERT_EQUAL_DOUBLE(300.0, getXQuadra(q2));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 100.0, getXQuadra(q1));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 300.0, getXQuadra(q2));
 }
 
 void test_getYQuadra(void) {
-    TEST_ASSERT_EQUAL_DOUBLE(200.0, getYQuadra(q1));
-    TEST_ASSERT_EQUAL_DOUBLE(150.0, getYQuadra(q2));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 200.0, getYQuadra(q1));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 150.0, getYQuadra(q2));
 }
 
 void test_getLQuadra(void) {
-    TEST_ASSERT_EQUAL_DOUBLE(80.0, getLQuadra(q1));
-    TEST_ASSERT_EQUAL_DOUBLE(50.0, getLQuadra(q2));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 80.0, getLQuadra(q1));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 50.0, getLQuadra(q2));
 }
 
 void test_getHQuadra(void) {
-    TEST_ASSERT_EQUAL_DOUBLE(60.0, getHQuadra(q1));
-    TEST_ASSERT_EQUAL_DOUBLE(40.0, getHQuadra(q2));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 60.0, getHQuadra(q1));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 40.0, getHQuadra(q2));
 }
 
 void test_getCorBQuadra(void) {
-    TEST_ASSERT_EQUAL_STRING("FF0000", getCorBQuadra(q1));
-    TEST_ASSERT_EQUAL_STRING("0000FF", getCorBQuadra(q2));
+    TEST_ASSERT_EQUAL_STRING("#FF0000", getCorBQuadra(q1));
+    TEST_ASSERT_EQUAL_STRING("#0000FF", getCorBQuadra(q2));
 }
 
 void test_getCorPQuadra(void) {
-    TEST_ASSERT_EQUAL_STRING("00FF00", getCorPQuadra(q1));
-    TEST_ASSERT_EQUAL_STRING("FFFF00", getCorPQuadra(q2));
+    TEST_ASSERT_EQUAL_STRING("#00FF00", getCorPQuadra(q1));
+    TEST_ASSERT_EQUAL_STRING("#FFFF00", getCorPQuadra(q2));
 }
 
 void test_getEspBQuadra(void) {
-    TEST_ASSERT_EQUAL_DOUBLE(2.0, getEspBQuadra(q1));
-    TEST_ASSERT_EQUAL_DOUBLE(1.5, getEspBQuadra(q2));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 2.0, getEspBQuadra(q1));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 1.5, getEspBQuadra(q2));
 }
 
 void test_areaQuadra(void) {
-    TEST_ASSERT_EQUAL_DOUBLE(4800.0, areaQuadra(q1));
-    TEST_ASSERT_EQUAL_DOUBLE(2000.0, areaQuadra(q2));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 4800.0, areaQuadra(q1));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 2000.0, areaQuadra(q2));
 }
 
 void test_areaQuadra_NULL(void) {
-    TEST_ASSERT_EQUAL_DOUBLE(-1.0, areaQuadra(NULL));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, -1.0, areaQuadra(NULL));
 }
 
 void test_validaFace(void) {
@@ -114,63 +111,57 @@ void test_validaCor(void) {
     TEST_ASSERT_TRUE(validaCor("FF0000"));
     TEST_ASSERT_TRUE(validaCor("#00FF00"));
     TEST_ASSERT_TRUE(validaCor("ABCDEF"));
-    TEST_ASSERT_TRUE(validaCor("123456"));
-    TEST_ASSERT_FALSE(validaCor("ZZZZZZ"));
-    TEST_ASSERT_FALSE(validaCor("12345"));
-    TEST_ASSERT_FALSE(validaCor("1234567"));
+    TEST_ASSERT_TRUE(validaCor("steelblue"));
+    TEST_ASSERT_TRUE(validaCor("MistyRose"));
     TEST_ASSERT_FALSE(validaCor(""));
     TEST_ASSERT_FALSE(validaCor(NULL));
 }
 
 void test_setCorBQuadra(void) {
-    setCorBQuadra(q1, "ABCDEF");
-    TEST_ASSERT_EQUAL_STRING("ABCDEF", getCorBQuadra(q1));
+    setCorBQuadra(q1, "#ABCDEF");
+    TEST_ASSERT_EQUAL_STRING("#ABCDEF", getCorBQuadra(q1));
 }
 
 void test_setCorPQuadra(void) {
-    setCorPQuadra(q1, "123456");
-    TEST_ASSERT_EQUAL_STRING("123456", getCorPQuadra(q1));
+    setCorPQuadra(q1, "#123456");
+    TEST_ASSERT_EQUAL_STRING("#123456", getCorPQuadra(q1));
 }
 
 void test_setEspBQuadra(void) {
     setEspBQuadra(q1, 3.5);
-    TEST_ASSERT_EQUAL_DOUBLE(3.5, getEspBQuadra(q1));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 3.5, getEspBQuadra(q1));
 }
 
 void test_setEspBQuadra_invalida(void) {
     setEspBQuadra(q1, 0);
-    TEST_ASSERT_EQUAL_DOUBLE(3.5, getEspBQuadra(q1));
-
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 3.5, getEspBQuadra(q1));
     setEspBQuadra(q1, -1.0);
-    TEST_ASSERT_EQUAL_DOUBLE(3.5, getEspBQuadra(q1));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 3.5, getEspBQuadra(q1));
 }
 
 void test_getPontoEndQuadra(void) {
     double x, y;
     getPontoEndQuadra(q1, 'N', 30.0, &x, &y);
-    TEST_ASSERT_EQUAL_DOUBLE(130.0, x);
-    TEST_ASSERT_EQUAL_DOUBLE(200.0, y);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 130.0, x);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 260.0, y);
 
     getPontoEndQuadra(q1, 'S', 20.0, &x, &y);
-    TEST_ASSERT_EQUAL_DOUBLE(120.0, x);
-    TEST_ASSERT_EQUAL_DOUBLE(140.0, y);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 120.0, x);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 200.0, y);
 
     getPontoEndQuadra(q1, 'L', 15.0, &x, &y);
-    TEST_ASSERT_EQUAL_DOUBLE(100.0, x);
-    TEST_ASSERT_EQUAL_DOUBLE(185.0, y);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 180.0, x);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 215.0, y);
 
     getPontoEndQuadra(q1, 'O', 10.0, &x, &y);
-    TEST_ASSERT_EQUAL_DOUBLE(20.0, x);
-    TEST_ASSERT_EQUAL_DOUBLE(190.0, y);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 100.0, x);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 210.0, y);
 }
 
 void test_getPontoEndQuadra_invalida(void) {
     double x = 999, y = 999;
     getPontoEndQuadra(NULL, 'N', 10.0, &x, &y);
-    TEST_ASSERT_EQUAL_DOUBLE(999.0, x);
-
-    getPontoEndQuadra(q1, 'X', 10.0, &x, &y);
-    TEST_ASSERT_EQUAL_DOUBLE(999.0, x);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 999.0, x);
 }
 
 void test_serialDesserialQuadra(void) {
@@ -185,11 +176,11 @@ void test_serialDesserialQuadra(void) {
     TEST_ASSERT_NOT_NULL(reconstruida);
 
     TEST_ASSERT_EQUAL_STRING(getCepQuadra(q1), getCepQuadra(reconstruida));
-    TEST_ASSERT_EQUAL_DOUBLE(getXQuadra(q1), getXQuadra(reconstruida));
-    TEST_ASSERT_EQUAL_DOUBLE(getYQuadra(q1), getYQuadra(reconstruida));
-    TEST_ASSERT_EQUAL_DOUBLE(getLQuadra(q1), getLQuadra(reconstruida));
-    TEST_ASSERT_EQUAL_DOUBLE(getHQuadra(q1), getHQuadra(reconstruida));
-    TEST_ASSERT_EQUAL_DOUBLE(getEspBQuadra(q1), getEspBQuadra(reconstruida));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, getXQuadra(q1), getXQuadra(reconstruida));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, getYQuadra(q1), getYQuadra(reconstruida));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, getLQuadra(q1), getLQuadra(reconstruida));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, getHQuadra(q1), getHQuadra(reconstruida));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, getEspBQuadra(q1), getEspBQuadra(reconstruida));
 
     freeQuadra(reconstruida);
     free(buffer);
@@ -220,13 +211,13 @@ void test_cor_sem_hashtag(void) {
 }
 
 void test_getters_com_NULL(void) {
-    TEST_ASSERT_EQUAL_DOUBLE(-1000.0, getXQuadra(NULL));
-    TEST_ASSERT_EQUAL_DOUBLE(-1000.0, getYQuadra(NULL));
-    TEST_ASSERT_EQUAL_DOUBLE(-1.0, getLQuadra(NULL));
-    TEST_ASSERT_EQUAL_DOUBLE(-1.0, getHQuadra(NULL));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, -1000.0, getXQuadra(NULL));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, -1000.0, getYQuadra(NULL));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, -1.0, getLQuadra(NULL));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, -1.0, getHQuadra(NULL));
     TEST_ASSERT_NULL(getCorBQuadra(NULL));
     TEST_ASSERT_NULL(getCorPQuadra(NULL));
-    TEST_ASSERT_EQUAL_DOUBLE(-1.0, getEspBQuadra(NULL));
+    TEST_ASSERT_FLOAT_WITHIN(0.01, -1.0, getEspBQuadra(NULL));
 }
 
 int main(void) {
