@@ -879,10 +879,9 @@ void processarArquivoQry(const char *caminho, const char *inputDir, const char *
 
     svgFileQry = fopen(caminhoSvg, "w");
     if (svgFileQry) {
-            fprintf(svgFileQry, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-            fprintf(svgFileQry, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" "
-                        "viewBox=\"0 0 9000 4500\">\n");
-          desenharQuadrasSvg(hfQuadras, svgFileQry);
+        fprintf(svgFileQry, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        fprintf(svgFileQry, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" "
+                            "viewBox=\"0 0 9000 4500\">\n");
     }
 
     FILE *f;
@@ -896,6 +895,7 @@ void processarArquivoQry(const char *caminho, const char *inputDir, const char *
     fclose(f);
 
     if (svgFileQry) {
+        desenharQuadrasSvg(hfQuadras, svgFileQry);
         fprintf(svgFileQry, "</svg>");
         fclose(svgFileQry);
         svgFileQry = NULL;
