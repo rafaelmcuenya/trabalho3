@@ -748,7 +748,7 @@ static void processarComandoQry(const char *linha) {
       char cpf[32], cep[32], faceLetra;
       int num;
       char resto[128];
-      int campos = sscanf(linha, "%*s %s %s Face.%c %d %[^\n]", cpf, cep, &faceLetra, &num, resto);
+      int campos = sscanf(linha, "%*s %s %s %c %d %[^\n]", cpf, cep, &faceLetra, &num, resto);
       if (campos >= 4) {
         char *compl = NULL;
         if (campos == 5) {
