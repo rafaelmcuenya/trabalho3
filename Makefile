@@ -10,10 +10,9 @@ CFLAGS = -ggdb -O0 -std=c99 -fstack-protector-all -Werror=implicit-function-decl
 LDFLAGS = -O0
 
 # Diretórios
-SRC_DIR = src
-INC_DIR = include
-TST_DIR = test
-UNITY_DIR = unity
+INC_DIR = ../include
+TST_DIR = ../test
+UNITY_DIR = ../unity
 
 # Objetos
 OBJETOS = main.o leitor.o hashfile.o quadra.o habitante.o morador.o \
@@ -24,42 +23,42 @@ $(PROJ_NAME): $(OBJETOS)
 	$(CC) -o $(PROJ_NAME) $(LDFLAGS) $(OBJETOS) -lm
 	@echo "Compilação bem sucedida."
 
-%.o: $(SRC_DIR)/%.c
+%.o: %.c
 	$(CC) -c $(CFLAGS) -I$(INC_DIR) $< -o $@
 
 # Módulo principal
-main.o: $(SRC_DIR)/main.c $(INC_DIR)/leitor.h $(INC_DIR)/trataNomeArquivo.h
-	$(CC) -c $(CFLAGS) -I$(INC_DIR) $(SRC_DIR)/main.c -o $@
+main.o: main.c $(INC_DIR)/leitor.h $(INC_DIR)/trataNomeArquivo.h
+	$(CC) -c $(CFLAGS) -I$(INC_DIR) main.c -o $@
 
 # Módulo leitor
-leitor.o: $(SRC_DIR)/leitor.c $(INC_DIR)/leitor.h $(INC_DIR)/quadra.h \
+leitor.o: leitor.c $(INC_DIR)/leitor.h $(INC_DIR)/quadra.h \
            $(INC_DIR)/habitante.h $(INC_DIR)/morador.h $(INC_DIR)/hashfile.h \
            $(INC_DIR)/trataNomeArquivo.h $(INC_DIR)/svg.h
-	$(CC) -c $(CFLAGS) -I$(INC_DIR) $(SRC_DIR)/leitor.c -o $@
+	$(CC) -c $(CFLAGS) -I$(INC_DIR) leitor.c -o $@
 
 # Módulo hashfile
-hashfile.o: $(SRC_DIR)/hashfile.c $(INC_DIR)/hashfile.h
-	$(CC) -c $(CFLAGS) -I$(INC_DIR) $(SRC_DIR)/hashfile.c -o $@
+hashfile.o: hashfile.c $(INC_DIR)/hashfile.h
+	$(CC) -c $(CFLAGS) -I$(INC_DIR) hashfile.c -o $@
 
 # Módulo quadra
-quadra.o: $(SRC_DIR)/quadra.c $(INC_DIR)/quadra.h
-	$(CC) -c $(CFLAGS) -I$(INC_DIR) $(SRC_DIR)/quadra.c -o $@
+quadra.o: quadra.c $(INC_DIR)/quadra.h
+	$(CC) -c $(CFLAGS) -I$(INC_DIR) quadra.c -o $@
 
 # Módulo habitante
-habitante.o: $(SRC_DIR)/habitante.c $(INC_DIR)/habitante.h
-	$(CC) -c $(CFLAGS) -I$(INC_DIR) $(SRC_DIR)/habitante.c -o $@
+habitante.o: habitante.c $(INC_DIR)/habitante.h
+	$(CC) -c $(CFLAGS) -I$(INC_DIR) habitante.c -o $@
 
 # Módulo morador
-morador.o: $(SRC_DIR)/morador.c $(INC_DIR)/morador.h $(INC_DIR)/habitante.h $(INC_DIR)/quadra.h
-	$(CC) -c $(CFLAGS) -I$(INC_DIR) $(SRC_DIR)/morador.c -o $@
+morador.o: morador.c $(INC_DIR)/morador.h $(INC_DIR)/habitante.h $(INC_DIR)/quadra.h
+	$(CC) -c $(CFLAGS) -I$(INC_DIR) morador.c -o $@
 
 # Módulo de tratamento de nomes
-trataNomeArquivo.o: $(SRC_DIR)/trataNomeArquivo.c $(INC_DIR)/trataNomeArquivo.h
-	$(CC) -c $(CFLAGS) -I$(INC_DIR) $(SRC_DIR)/trataNomeArquivo.c -o $@
+trataNomeArquivo.o: trataNomeArquivo.c $(INC_DIR)/trataNomeArquivo.h
+	$(CC) -c $(CFLAGS) -I$(INC_DIR) trataNomeArquivo.c -o $@
 
 # Módulo SVG
-svg.o: $(SRC_DIR)/svg.c $(INC_DIR)/svg.h $(INC_DIR)/quadra.h $(INC_DIR)/morador.h $(INC_DIR)/hashfile.h
-	$(CC) -c $(CFLAGS) -I$(INC_DIR) $(SRC_DIR)/svg.c -o $@
+svg.o: svg.c $(INC_DIR)/svg.h $(INC_DIR)/quadra.h $(INC_DIR)/morador.h $(INC_DIR)/hashfile.h
+	$(CC) -c $(CFLAGS) -I$(INC_DIR) svg.c -o $@
 
 # Unity
 unity.o: $(UNITY_DIR)/unity.c $(UNITY_DIR)/unity.h $(UNITY_DIR)/unity_internals.h
